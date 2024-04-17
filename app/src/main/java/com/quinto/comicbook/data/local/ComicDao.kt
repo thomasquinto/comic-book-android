@@ -16,11 +16,13 @@ interface ComicDao {
     @Query("DELETE FROM comicentity")
     suspend fun clearComics()
 
+    // Changed from this to be a "starts with" search
+    //            WHERE LOWER(title) LIKE '%' || LOWER(:query) || '%'
     @Query(
         """
             SELECT * 
             FROM comicentity
-            WHERE LOWER(title) LIKE '%' || LOWER(:query) || '%'
+            WHERE LOWER(title) LIKE LOWER(:query) || '%'
         """
     )
     suspend fun searchComics(query: String): List<ComicEntity>

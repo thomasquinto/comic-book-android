@@ -23,7 +23,11 @@ interface ComicBookApi {
     suspend fun getComics(
         @Query("apikey") apiKey: String = PUBLIC_KEY,
         @Query("ts") ts: Long = System.currentTimeMillis(),
-        @Query("hash") hash: String = generateHash(ts.toString())
+        @Query("hash") hash: String = generateHash(ts.toString()),
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("orderBy") orderBy: String,
+        @Query("titleStartsWith") titleStartsWith: String? = null
     ): ComicsResponseDto
 }
 

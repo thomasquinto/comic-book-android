@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,14 +25,30 @@ import coil.request.ImageRequest
 import com.quinto.comicbook.domain.model.Comic
 
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel
+fun ComicListScreen(
+    viewModel: ComicListViewModel
 ) {
     val state = viewModel.state
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        OutlinedTextField(
+            value = state.titleStartsWith,
+            onValueChange = {
+                viewModel.onEvent(
+                    ComicListEvent.OnSearchQueryChange(it)
+                )
+            },
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            placeholder = {
+                Text(text = "Search")
+            },
+            maxLines = 1,
+            singleLine = true
+        )
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
         ) {

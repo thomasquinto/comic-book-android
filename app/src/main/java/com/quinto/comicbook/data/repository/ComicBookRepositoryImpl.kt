@@ -5,6 +5,7 @@ import com.quinto.comicbook.data.mapper.toComic
 import com.quinto.comicbook.data.mapper.toComicEntity
 import com.quinto.comicbook.data.remote.ComicBookApi
 import com.quinto.comicbook.domain.model.Comic
+import com.quinto.comicbook.domain.model.OrderBy
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import com.quinto.comicbook.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -22,23 +23,31 @@ class ComicBookRepositoryImpl @Inject constructor(
 
     override suspend fun getComics(
         fetchFromRemote: Boolean,
-        query: String
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        titleStartsWith: String
     ): Flow<Resource<List<Comic>>> {
         return flow {
             emit(Resource.Loading(true))
-            val localComics = db.dao.searchComics(query)
+            val localComics = db.dao.searchComics(titleStartsWith)
             emit(Resource.Success(
                 data = localComics.map { it.toComic() }
             ))
 
-            val isDbEmpty = localComics.isEmpty() && query.isBlank()
+            val isDbEmpty = localComics.isEmpty() && titleStartsWith.isBlank()
             val shouldJustLoadFromCache = !isDbEmpty && !fetchFromRemote
             if (shouldJustLoadFromCache) {
                 emit(Resource.Loading(false))
                 return@flow
             }
+
             val remoteListings = try {
-                val comicsResponse = api.getComics()
+                val comicsResponse = api.getComics(
+                    offset = offset,
+                    limit = limit,
+                    orderBy = orderBy.value,
+                    titleStartsWith = titleStartsWith.ifBlank { null })
                 comicsResponse.data.results.map { it.toComic() }
             } catch (e: IOException) {
                 e.printStackTrace()

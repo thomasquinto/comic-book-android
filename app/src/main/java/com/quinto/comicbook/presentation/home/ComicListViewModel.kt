@@ -8,27 +8,48 @@ import androidx.lifecycle.viewModelScope
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import com.quinto.comicbook.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class ComicListViewModel @Inject constructor(
     private val repository: ComicBookRepository
 ): ViewModel() {
 
-    var state by mutableStateOf(HomeState())
+    var state by mutableStateOf(ComicListState())
+
+    private var searchComics: Job? = null
 
     init {
         getComics()
     }
 
+    fun onEvent(event: ComicListEvent) {
+        when(event) {
+            is ComicListEvent.Refresh -> {
+                getComics(fetchFromRemote = true)
+            }
+            is ComicListEvent.OnSearchQueryChange -> {
+                state = state.copy(titleStartsWith = event.query)
+                searchComics?.cancel()
+                searchComics = viewModelScope.launch {
+                    delay(500L)
+                    getComics()
+                }
+            }
+        }
+    }
+
+
     private fun getComics(
-        query: String = state.searchQuery.lowercase(),
-        fetchFromRemote: Boolean = false
+        query: String = state.titleStartsWith.lowercase(),
+        fetchFromRemote: Boolean = true
     ) {
         viewModelScope.launch {
             repository
-                .getComics(fetchFromRemote, query)
+                .getComics(fetchFromRemote, state.offset, state.limit, state.orderBy, state.titleStartsWith)
                 .collect { result ->
                     when(result) {
                         is Resource.Success -> {

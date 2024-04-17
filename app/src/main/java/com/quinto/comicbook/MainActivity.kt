@@ -8,8 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.quinto.comicbook.presentation.home.HomeScreen
-import com.quinto.comicbook.presentation.home.HomeViewModel
+import com.quinto.comicbook.presentation.home.ComicListScreen
+import com.quinto.comicbook.presentation.home.ComicListViewModel
 import com.quinto.comicbook.ui.theme.ComicBookTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,8 +24,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val homeViewModel: HomeViewModel = viewModel()
-                    HomeScreen(homeViewModel)
+                    val comicListViewModel: ComicListViewModel = viewModel()
+                    ComicListScreen(comicListViewModel)
                 }
             }
         }
