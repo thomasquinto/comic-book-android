@@ -1,6 +1,6 @@
-package com.quinto.comicbook.presentation.home
+package com.quinto.comicbook.presentation.comic_list
 
 sealed class ComicListEvent {
-    object Refresh: ComicListEvent()
+    data object Refresh: ComicListEvent()
     data class OnSearchQueryChange(val query: String): ComicListEvent()
 }

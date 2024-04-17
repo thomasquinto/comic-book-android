@@ -1,4 +1,4 @@
-package com.quinto.comicbook.presentation.home
+package com.quinto.comicbook.presentation.comic_list
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +36,7 @@ class ComicListViewModel @Inject constructor(
                 searchComics?.cancel()
                 searchComics = viewModelScope.launch {
                     delay(500L)
-                    getComics()
+                    getComics(fetchFromRemote = true)
                 }
             }
         }
@@ -44,8 +44,7 @@ class ComicListViewModel @Inject constructor(
 
 
     private fun getComics(
-        query: String = state.titleStartsWith.lowercase(),
-        fetchFromRemote: Boolean = true
+        fetchFromRemote: Boolean = false
     ) {
         viewModelScope.launch {
             repository

@@ -8,8 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.quinto.comicbook.presentation.home.ComicListScreen
-import com.quinto.comicbook.presentation.home.ComicListViewModel
+import com.quinto.comicbook.presentation.comic_list.ComicListScreen
+import com.quinto.comicbook.presentation.comic_list.ComicListViewModel
 import com.quinto.comicbook.ui.theme.ComicBookTheme
 import dagger.hilt.android.AndroidEntryPoint
 

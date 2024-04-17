@@ -1,4 +1,4 @@
-package com.quinto.comicbook.presentation.home
+package com.quinto.comicbook.presentation.comic_list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,12 +22,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.quinto.comicbook.domain.model.Comic
 
 @Composable
 fun ComicListScreen(
     viewModel: ComicListViewModel
 ) {
+    val swipeRefreshState = rememberSwipeRefreshState(
+        isRefreshing = viewModel.state.isRefreshing
+    )
     val state = viewModel.state
 
     Column(
@@ -49,14 +54,21 @@ fun ComicListScreen(
             maxLines = 1,
             singleLine = true
         )
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = {
+                viewModel.onEvent(ComicListEvent.Refresh)
+            }
         ) {
-            items(state.comics.size) {
-                ComicItem(
-                    comic = state.comics[it],
-                    modifier = Modifier
-                )
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(state.comics.size) {
+                    ComicItem(
+                        comic = state.comics[it],
+                        modifier = Modifier
+                    )
+                }
             }
         }
     }
