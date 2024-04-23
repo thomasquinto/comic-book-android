@@ -23,6 +23,7 @@ interface ComicDao {
             SELECT * 
             FROM comicentity
             WHERE LOWER(title) LIKE LOWER(:query) || '%'
+            ORDER BY title ASC
         """
     )
     suspend fun searchComics(query: String): List<ComicEntity>

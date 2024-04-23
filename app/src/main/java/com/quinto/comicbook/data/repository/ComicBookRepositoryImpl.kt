@@ -47,7 +47,8 @@ class ComicBookRepositoryImpl @Inject constructor(
                     offset = offset,
                     limit = limit,
                     orderBy = orderBy.value,
-                    titleStartsWith = titleStartsWith.ifBlank { null })
+                    titleStartsWith = titleStartsWith.ifBlank { null }
+                )
                 comicsResponse.data.results.map { it.toComic() }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -59,14 +60,20 @@ class ComicBookRepositoryImpl @Inject constructor(
                 null
             }
 
+            // If no remote listings and db is not empty, just return the db listings
+            if (remoteListings.isNullOrEmpty() && !isDbEmpty) {
+                emit(Resource.Loading(false))
+                return@flow
+            }
+
             remoteListings?.let { listings ->
-                dao.clearComics()
+                //dao.clearComics()
                 dao.insertComics(
                     listings.map { it.toComicEntity() }
                 )
                 emit(Resource.Success(
                     data = dao
-                        .searchComics("")
+                        .searchComics(titleStartsWith)
                         .map { it.toComic() }
                 ))
                 emit(Resource.Loading(false))
