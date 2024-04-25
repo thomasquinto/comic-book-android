@@ -126,7 +126,7 @@ fun ComicItem(
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = comic.title,
-            fontSize = 16.sp,
+            fontSize = 18.sp,
             color = MaterialTheme.colorScheme.onBackground,
             overflow = TextOverflow.Visible,
             maxLines = 3,
@@ -143,12 +143,12 @@ fun LoadingItem() {
         CircularProgressIndicator(
             modifier = Modifier.drawBehind {
                 drawCircle(
-                    Color.Blue,
+                    color = Color.Transparent,
                     radius = size.width / 2 - strokeWidth.toPx() / 2,
                     style = Stroke(strokeWidth.toPx())
                 )
             },
-            color = Color.LightGray,
+            color = MaterialTheme.colorScheme.primary,
             strokeWidth = strokeWidth
         )
         Spacer(modifier = Modifier.weight(1.0f))
