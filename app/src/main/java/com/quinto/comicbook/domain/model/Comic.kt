@@ -5,9 +5,12 @@ import java.util.Date
 data class Comic(
     val id: Int,
     val title: String,
+    val issueNumber: Double? = null,
     val description: String,
+    val modified: Date,
     val thumbnailUrl: String,
-    val modified: Date
+    val focDate: Date? = null,
+    val onSaleDate: Date? = null
 )
 
 enum class OrderBy(val value: String) {

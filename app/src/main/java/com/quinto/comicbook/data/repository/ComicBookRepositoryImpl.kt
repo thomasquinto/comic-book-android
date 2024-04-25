@@ -3,6 +3,7 @@ package com.quinto.comicbook.data.repository
 import com.quinto.comicbook.data.local.ComicBookDatabase
 import com.quinto.comicbook.data.mapper.toComic
 import com.quinto.comicbook.data.mapper.toComicEntity
+import com.quinto.comicbook.data.mapper.toDbOrderBy
 import com.quinto.comicbook.data.remote.ComicBookApi
 import com.quinto.comicbook.domain.model.Comic
 import com.quinto.comicbook.domain.model.OrderBy
@@ -30,7 +31,9 @@ class ComicBookRepositoryImpl @Inject constructor(
     ): Flow<Resource<List<Comic>>> {
         return flow {
             emit(Resource.Loading(true))
-            val localComics = db.dao.searchComics(titleStartsWith)
+
+            /*
+            val localComics = db.dao.searchComics(titleStartsWith, toDbOrderBy(orderBy))
             emit(Resource.Success(
                 data = localComics.map { it.toComic() }
             ))
@@ -41,6 +44,7 @@ class ComicBookRepositoryImpl @Inject constructor(
                 emit(Resource.Loading(false))
                 return@flow
             }
+             */
 
             val remoteListings = try {
                 val comicsResponse = api.getComics(
@@ -60,6 +64,7 @@ class ComicBookRepositoryImpl @Inject constructor(
                 null
             }
 
+            /*
             // If no remote listings and db is not empty, just return the db listings
             if (remoteListings.isNullOrEmpty() && !isDbEmpty) {
                 emit(Resource.Loading(false))
@@ -73,9 +78,19 @@ class ComicBookRepositoryImpl @Inject constructor(
                 )
                 emit(Resource.Success(
                     data = dao
-                        .searchComics(titleStartsWith)
+                        .searchComics(titleStartsWith, toDbOrderBy(orderBy))
                         .map { it.toComic() }
                 ))
+                emit(Resource.Loading(false))
+            }
+             */
+
+            remoteListings?.let { listings ->
+                emit(
+                    Resource.Success(
+                        data = listings
+                    )
+                )
                 emit(Resource.Loading(false))
             }
         }

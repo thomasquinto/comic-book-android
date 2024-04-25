@@ -8,7 +8,7 @@ data class ComicListState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     var offset: Int = 0,
-    var limit: Int = 40,
+    var limit: Int = 20,
     var orderBy: OrderBy = OrderBy.TITLE,
-    val titleStartsWith: String = "",
+    val searchText: String = "",
 )

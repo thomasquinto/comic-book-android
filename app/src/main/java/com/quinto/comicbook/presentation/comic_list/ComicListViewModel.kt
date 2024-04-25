@@ -32,7 +32,7 @@ class ComicListViewModel @Inject constructor(
                 getComics(fetchFromRemote = true)
             }
             is ComicListEvent.OnSearchQueryChange -> {
-                state = state.copy(titleStartsWith = event.query)
+                state = state.copy(searchText = event.query)
                 searchComics?.cancel()
                 searchComics = viewModelScope.launch {
                     delay(500L)
@@ -48,7 +48,7 @@ class ComicListViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             repository
-                .getComics(fetchFromRemote, state.offset, state.limit, state.orderBy, state.titleStartsWith)
+                .getComics(fetchFromRemote, state.offset, state.limit, state.orderBy, state.searchText)
                 .collect { result ->
                     when(result) {
                         is Resource.Success -> {

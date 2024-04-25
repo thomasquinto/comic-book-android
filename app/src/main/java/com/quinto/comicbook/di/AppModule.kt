@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.quinto.comicbook.data.local.ComicBookDatabase
 import com.quinto.comicbook.data.remote.ComicBookApi
+import com.quinto.comicbook.data.repository.dto.DateJsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -24,7 +25,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideComicBookApi(): ComicBookApi {
-        val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+        val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory())
+            .add(DateJsonAdapter())
+            .build()
 
         return Retrofit.Builder()
             .baseUrl(ComicBookApi.BASE_URL)

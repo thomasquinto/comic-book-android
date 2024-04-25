@@ -27,7 +27,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.quinto.comicbook.domain.model.Comic
 
 @Composable
-fun ComicListScreen(
+fun ComicListView(
     viewModel: ComicListViewModel
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(
@@ -39,7 +39,7 @@ fun ComicListScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         OutlinedTextField(
-            value = state.titleStartsWith,
+            value = state.searchText,
             onValueChange = {
                 viewModel.onEvent(
                     ComicListEvent.OnSearchQueryChange(it)

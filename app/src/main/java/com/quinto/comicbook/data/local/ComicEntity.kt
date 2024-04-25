@@ -2,6 +2,7 @@ package com.quinto.comicbook.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Date
 
 /*
 Comic {
@@ -40,8 +41,11 @@ Comic {
 @Entity
 data class ComicEntity(
     @PrimaryKey val id: Int? = null,
-    val title: String,
-    val description: String,
-    val thumbnailUrl: String,
-    val modified: java.util.Date
+    val title: String? = null,
+    val issueNumber: Double? = null,
+    val description: String? = null,
+    val modified: Date? = null,
+    val focDate: Date? = null,
+    val onSaleDate: Date? = null,
+    val thumbnailUrl: String? = null
 )
