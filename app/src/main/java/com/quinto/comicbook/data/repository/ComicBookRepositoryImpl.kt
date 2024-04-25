@@ -2,8 +2,6 @@ package com.quinto.comicbook.data.repository
 
 import com.quinto.comicbook.data.local.ComicBookDatabase
 import com.quinto.comicbook.data.mapper.toComic
-import com.quinto.comicbook.data.mapper.toComicEntity
-import com.quinto.comicbook.data.mapper.toDbOrderBy
 import com.quinto.comicbook.data.remote.ComicBookApi
 import com.quinto.comicbook.domain.model.Comic
 import com.quinto.comicbook.domain.model.OrderBy

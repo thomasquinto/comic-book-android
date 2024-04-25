@@ -29,33 +29,46 @@ class ComicListViewModel @Inject constructor(
     fun onEvent(event: ComicListEvent) {
         when(event) {
             is ComicListEvent.Refresh -> {
-                getComics(fetchFromRemote = true)
+                getComics(reset = true)
             }
             is ComicListEvent.OnSearchQueryChange -> {
                 state = state.copy(searchText = event.query)
                 searchComics?.cancel()
                 searchComics = viewModelScope.launch {
                     delay(500L)
-                    getComics(fetchFromRemote = true)
+                    getComics(reset = true)
                 }
+            }
+            is ComicListEvent.LoadMore -> {
+                getComics(reset = false)
             }
         }
     }
 
-
     private fun getComics(
-        fetchFromRemote: Boolean = false
+        reset: Boolean = true
     ) {
+        if (reset) {
+            state.offset = 0
+        } else {
+            state.offset += state.limit
+        }
         viewModelScope.launch {
             repository
-                .getComics(fetchFromRemote, state.offset, state.limit, state.orderBy, state.searchText)
+                .getComics(false, state.offset, state.limit, state.orderBy, state.searchText)
                 .collect { result ->
                     when(result) {
                         is Resource.Success -> {
                             result.data?.let {
-                                state = state.copy(
-                                    comics = it
-                                )
+                                if (state.offset == 0) {
+                                    state = state.copy(
+                                        comics = it
+                                    )
+                                } else {
+                                    state = state.copy(
+                                        comics = state.comics + it
+                                    )
+                                }
                             }
                         }
                         is Resource.Error -> Unit
@@ -66,4 +79,5 @@ class ComicListViewModel @Inject constructor(
                 }
         }
     }
+
 }
