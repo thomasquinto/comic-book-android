@@ -1,4 +1,4 @@
-package com.quinto.comicbook.presentation.comic_list
+package com.quinto.comicbook.presentation.item_list
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,38 +14,38 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ComicListViewModel @Inject constructor(
+class ItemListViewModel @Inject constructor(
     private val repository: ComicBookRepository
 ): ViewModel() {
 
-    var state by mutableStateOf(ComicListState())
+    var state by mutableStateOf(ItemListState())
 
-    private var searchComics: Job? = null
+    private var searchItems: Job? = null
 
     init {
-        getComics()
+        getItems()
     }
 
-    fun onEvent(event: ComicListEvent) {
+    fun onEvent(event: ItemListEvent) {
         when(event) {
-            is ComicListEvent.Refresh -> {
-                getComics(reset = true)
+            is ItemListEvent.Refresh -> {
+                getItems(reset = true)
             }
-            is ComicListEvent.OnSearchQueryChange -> {
+            is ItemListEvent.OnSearchQueryChange -> {
                 state = state.copy(searchText = event.query)
-                searchComics?.cancel()
-                searchComics = viewModelScope.launch {
+                searchItems?.cancel()
+                searchItems = viewModelScope.launch {
                     delay(500L)
-                    getComics(reset = true)
+                    getItems(reset = true)
                 }
             }
-            is ComicListEvent.LoadMore -> {
-                getComics(reset = false)
+            is ItemListEvent.LoadMore -> {
+                getItems(reset = false)
             }
         }
     }
 
-    private fun getComics(
+    private fun getItems(
         reset: Boolean = true
     ) {
         if (reset) {
@@ -55,18 +55,18 @@ class ComicListViewModel @Inject constructor(
         }
         viewModelScope.launch {
             repository
-                .getComics(false, state.offset, state.limit, state.orderBy, state.searchText)
+                .getComics(state.offset, state.limit, state.orderBy, state.searchText, false)
                 .collect { result ->
                     when(result) {
                         is Resource.Success -> {
                             result.data?.let {
                                 if (state.offset == 0) {
                                     state = state.copy(
-                                        comics = it
+                                        items = it
                                     )
                                 } else {
                                     state = state.copy(
-                                        comics = state.comics + it
+                                        items = state.items + it
                                     )
                                 }
                             }

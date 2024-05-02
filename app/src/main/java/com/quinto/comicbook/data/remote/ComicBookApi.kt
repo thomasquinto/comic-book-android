@@ -1,6 +1,7 @@
 package com.quinto.comicbook.data.remote
 
-import com.quinto.comicbook.data.repository.dto.ComicsResponseDto
+import com.quinto.comicbook.data.repository.dto.ComicDto
+import com.quinto.comicbook.data.repository.dto.ResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 import java.security.MessageDigest
@@ -28,7 +29,7 @@ interface ComicBookApi {
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
         @Query("titleStartsWith") titleStartsWith: String? = null
-    ): ComicsResponseDto
+    ): ResponseDto<ComicDto>
 }
 
 private fun String.md5(): String {

@@ -8,8 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.quinto.comicbook.presentation.comic_list.ComicListView
-import com.quinto.comicbook.presentation.comic_list.ComicListViewModel
+import com.quinto.comicbook.presentation.item_list.ItemListView
+import com.quinto.comicbook.presentation.item_list.ItemListViewModel
 import com.quinto.comicbook.ui.theme.ComicBookTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,8 +24,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val comicListViewModel: ComicListViewModel = viewModel()
-                    ComicListView(comicListViewModel)
+                    val itemListViewModel: ItemListViewModel = viewModel()
+                    ItemListView(itemListViewModel)
                 }
             }
         }

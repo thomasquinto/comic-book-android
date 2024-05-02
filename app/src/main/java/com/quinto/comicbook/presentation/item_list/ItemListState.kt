@@ -1,10 +1,10 @@
-package com.quinto.comicbook.presentation.comic_list
+package com.quinto.comicbook.presentation.item_list
 
-import com.quinto.comicbook.domain.model.Comic
+import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.OrderBy
 
-data class ComicListState(
-    val comics: List<Comic> = emptyList(),
+data class ItemListState(
+    val items: List<Item> = emptyList(),
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     var offset: Int = 0,

@@ -6,25 +6,25 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface ComicDao {
+interface ItemDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertComics(
-        comicEntities: List<ComicEntity>
+    suspend fun insertItems(
+        comicEntities: List<ItemEntity>
     )
 
-    @Query("DELETE FROM comicentity")
-    suspend fun clearComics()
+    @Query("DELETE FROM itementity")
+    suspend fun clearItems()
 
     // Changed from this to be a "starts with" search
     //            WHERE LOWER(title) LIKE '%' || LOWER(:query) || '%'
     @Query(
         """
             SELECT * 
-            FROM comicentity
-            WHERE LOWER(title) LIKE LOWER(:query) || '%'
+            FROM itementity
+            WHERE LOWER(name) LIKE LOWER(:query) || '%'
             ORDER BY (:orderBy)
         """
     )
-    suspend fun searchComics(query: String, orderBy: String): List<ComicEntity>
+    suspend fun searchItems(query: String, orderBy: String): List<ItemEntity>
 }

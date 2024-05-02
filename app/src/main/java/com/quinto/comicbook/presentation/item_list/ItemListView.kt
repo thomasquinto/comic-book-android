@@ -1,4 +1,4 @@
-package com.quinto.comicbook.presentation.comic_list
+package com.quinto.comicbook.presentation.item_list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,11 +33,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.quinto.comicbook.domain.model.Comic
+import com.quinto.comicbook.domain.model.Item
 
 @Composable
-fun ComicListView(
-    viewModel: ComicListViewModel
+fun ItemListView(
+    viewModel: ItemListViewModel
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = viewModel.state.isRefreshing
@@ -55,7 +55,7 @@ fun ComicListView(
     }
     // load more if scrolled to bottom
     LaunchedEffect(reachedBottom) {
-        if (reachedBottom) viewModel.onEvent(ComicListEvent.LoadMore)
+        if (reachedBottom) viewModel.onEvent(ItemListEvent.LoadMore)
     }
 
     Column(
@@ -65,7 +65,7 @@ fun ComicListView(
             value = state.searchText,
             onValueChange = {
                 viewModel.onEvent(
-                    ComicListEvent.OnSearchQueryChange(it)
+                    ItemListEvent.OnSearchQueryChange(it)
                 )
             },
             modifier = Modifier
@@ -80,16 +80,16 @@ fun ComicListView(
         SwipeRefresh(
             state = swipeRefreshState,
             onRefresh = {
-                viewModel.onEvent(ComicListEvent.Refresh)
+                viewModel.onEvent(ItemListEvent.Refresh)
             }
         ) {
             LazyColumn (
                 modifier = Modifier.fillMaxWidth(),
                 state = listState
             ) {
-                items(state.comics.size) {
-                    ComicItem(
-                        comic = state.comics[it],
+                items(state.items.size) {
+                    ItemLabel(
+                        item = state.items[it],
                         modifier = Modifier
                     )
                 }
@@ -104,8 +104,8 @@ fun ComicListView(
 }
 
 @Composable
-fun ComicItem(
-    comic: Comic,
+fun ItemLabel(
+    item: Item,
     modifier: Modifier
 ) {
     Row(
@@ -114,7 +114,7 @@ fun ComicItem(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(comic.thumbnailUrl)
+                .data(item.thumbnailUrl)
                 .crossfade(true)
                 .build(),
             contentScale = ContentScale.Crop,
@@ -125,7 +125,7 @@ fun ComicItem(
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
-            text = comic.title,
+            text = item.name,
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.onBackground,
             overflow = TextOverflow.Visible,
