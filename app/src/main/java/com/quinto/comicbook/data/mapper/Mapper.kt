@@ -1,6 +1,7 @@
 package com.quinto.comicbook.data.mapper
 
 import com.quinto.comicbook.data.local.ItemEntity
+import com.quinto.comicbook.data.repository.dto.CharacterDto
 import com.quinto.comicbook.data.repository.dto.ComicDto
 import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.OrderBy
@@ -26,23 +27,10 @@ fun Item.toEntity(): ItemEntity {
     )
 }
 
-fun ComicDto.toItem(): Item {
-    val thumbnailUrl = "${thumbnail?.path}.${thumbnail?.extension}"
-        .replace("http://", "https://" )
-
-    val item = Item(
-        id = id ?: 0,
-        name = title ?: "",
-        description = description ?: "",
-        thumbnailUrl = thumbnailUrl,
-        date = modified ?: Date(),
-    )
-    println("Item: $item")
-    return item
-}
-
 fun toDbOrderBy(orderBy: OrderBy): String {
     return when (orderBy) {
+        OrderBy.NAME -> "title ASC"
+        OrderBy.NAME_DESC -> "title DESC"
         OrderBy.TITLE -> "title ASC"
         OrderBy.TITLE_DESC -> "title DESC"
         OrderBy.MODIFIED -> "modified ASC"

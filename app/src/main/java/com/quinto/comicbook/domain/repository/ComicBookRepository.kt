@@ -13,5 +13,13 @@ interface ComicBookRepository {
         orderBy: OrderBy = OrderBy.TITLE,
         titleStartsWith: String = "",
         fetchFromRemote: Boolean = false
-        ): Flow<Resource<List<Item>>>
+    ): Flow<Resource<List<Item>>>
+
+    suspend fun getCharacters(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy = OrderBy.TITLE,
+        nameStartsWith: String = "",
+        fetchFromRemote: Boolean = false
+    ): Flow<Resource<List<Item>>>
 }

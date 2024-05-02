@@ -1,5 +1,6 @@
 package com.quinto.comicbook.data.remote
 
+import com.quinto.comicbook.data.repository.dto.CharacterDto
 import com.quinto.comicbook.data.repository.dto.ComicDto
 import com.quinto.comicbook.data.repository.dto.ResponseDto
 import retrofit2.http.GET
@@ -30,6 +31,17 @@ interface ComicBookApi {
         @Query("orderBy") orderBy: String,
         @Query("titleStartsWith") titleStartsWith: String? = null
     ): ResponseDto<ComicDto>
+
+    @GET("characters")
+    suspend fun getCharacters(
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
+        @Query("ts") ts: Long = System.currentTimeMillis(),
+        @Query("hash") hash: String = generateHash(ts.toString()),
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("orderBy") orderBy: String,
+        @Query("nameStartsWith") nameStartsWith: String? = null
+    ): ResponseDto<CharacterDto>
 }
 
 private fun String.md5(): String {

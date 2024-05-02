@@ -23,4 +23,14 @@ class HomeViewModel @Inject constructor(
     ): Flow<Resource<List<Item>>> {
         return repository.getComics(offset, limit, orderBy, titleStartsWith, fetchFromRemote)
     }
+
+    suspend fun getCharacters(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy = OrderBy.NAME,
+        nameStartsWith: String = "",
+        fetchFromRemote: Boolean = false
+    ): Flow<Resource<List<Item>>> {
+        return repository.getCharacters(offset, limit, orderBy, nameStartsWith, fetchFromRemote)
+    }
 }

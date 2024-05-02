@@ -3,9 +3,9 @@ package com.quinto.comicbook.data.repository.dto
 import com.quinto.comicbook.domain.model.Item
 import java.util.Date
 
-data class ComicDto(
+data class CharacterDto(
     val id: Int?,
-    val title: String?,
+    val name: String?,
     val description: String?,
     val modified: Date?,
     val thumbnail: ThumbnailDto?,
@@ -14,7 +14,7 @@ data class ComicDto(
     override fun toItem(): Item {
         val item = Item(
             id = id ?: 0,
-            name = title ?: "",
+            name = name ?: "",
             description = description ?: "",
             thumbnailUrl = thumbnail?.thumbnailUrl ?: "",
             date = modified ?: Date(),
