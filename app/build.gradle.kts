@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.hilt)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.logging.interceptor)
     implementation(libs.coil)
     implementation(libs.hilt.android.v244)

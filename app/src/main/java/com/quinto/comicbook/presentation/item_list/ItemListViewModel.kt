@@ -5,18 +5,27 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.quinto.comicbook.domain.repository.ComicBookRepository
+import com.quinto.comicbook.domain.model.Item
+import com.quinto.comicbook.domain.model.OrderBy
 import com.quinto.comicbook.util.Resource
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ItemListViewModel @Inject constructor(
-    private val repository: ComicBookRepository
+@HiltViewModel(assistedFactory = ItemListViewModel.ItemListViewModelFactory::class)
+class ItemListViewModel @AssistedInject constructor (
+    @Assisted private val getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>
 ): ViewModel() {
+
+    @AssistedFactory
+    interface ItemListViewModelFactory {
+        fun create(getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>): ItemListViewModel
+    }
 
     var state by mutableStateOf(ItemListState())
 
@@ -54,8 +63,7 @@ class ItemListViewModel @Inject constructor(
             state.offset += state.limit
         }
         viewModelScope.launch {
-            repository
-                .getComics(state.offset, state.limit, state.orderBy, state.searchText, false)
+            getItems(state.offset, state.limit, state.orderBy, state.searchText, false)
                 .collect { result ->
                     when(result) {
                         is Resource.Success -> {

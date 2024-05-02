@@ -1,5 +1,6 @@
 package com.quinto.comicbook.presentation.item_list
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,7 +38,7 @@ import com.quinto.comicbook.domain.model.Item
 
 @Composable
 fun ItemListView(
-    viewModel: ItemListViewModel
+    viewModel: ItemListViewModel = viewModel()
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = viewModel.state.isRefreshing
