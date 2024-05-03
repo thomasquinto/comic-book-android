@@ -1,6 +1,7 @@
 package com.quinto.comicbook.presentation.item_hlist
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,9 +58,31 @@ fun ItemHListView(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
     ) {
 
+        Row(
+            modifier = Modifier
+                .padding(
+                    top = 4.dp,
+                    bottom = 4.dp
+                )
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = "Items",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Spacer(modifier = Modifier.weight(1.0f))
+            Text(
+                text = "See more",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
         LazyRow(
             state = listState
         ) {
@@ -84,7 +108,7 @@ fun ItemLabel(
 ) {
     Column(
         modifier = modifier
-            .width(100.dp)
+            .width(108.dp)
             .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
