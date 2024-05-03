@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 fun HomeView(
     viewModel: HomeViewModel = viewModel()
 ) {
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -91,6 +92,7 @@ fun HomeView(
                         }
                     ItemHListView(storyViewModel)
                 }
+
             }
         }
     )
@@ -102,6 +104,18 @@ fun HomeView(
         }
         ItemVListView(itemVListViewModel)
     }
+     */
+
+    /*
+        ItemDetailView(
+        Item(
+            id = 71400,
+            name = "Superior Spider-Man Vol. 2: Otto-matic (Trade Paperback)",
+            description = "Collects Superior Spider-Man (2018) #7-12.  Like the rest of America, the West Coast has been overrun with Frost Giants! But Otto Octavius doesn’t settle for chaos — he plans to win the War of the Realms single-handedly. Well, maybe not single-handedly. He needs minions. Super-minions! So he recruits…the West Coast Avengers?! Will Otto Octavius and Quentin Quire become BFFs? If they can somehow work together and save San Francisco, Otto will be due a parade — but any celebrations might be short-lived, because someone dangerous is coming. Otto calls himself the Superior Spider-Man? Norman Osborn, the Spider-Man of Earth-44145 you met in SPIDER-GEDDON, begs to differ — and has some very creative ways to prove his true superiority! Norman is out to destroy everything. Does Otto stand a chance of stopping him? Does he even stand a chance at living through this?!",
+            date = Date(),
+            thumbnailUrl = "https://i.annihil.us/u/prod/marvel/i/mg/c/f0/5df3fc8b3c883.jpg"
+        )
+    )
      */
 }
 
