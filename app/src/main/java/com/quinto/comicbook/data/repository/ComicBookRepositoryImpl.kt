@@ -21,7 +21,7 @@ class ComicBookRepositoryImpl @Inject constructor(
 
     private val dao = db.dao
 
-    private suspend fun <T : MappedItem> getItems(
+    private suspend fun <T:  MappedItem> getItems(
         offset: Int,
         limit: Int,
         orderBy: OrderBy,
@@ -65,6 +65,16 @@ class ComicBookRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getCharacters(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        nameStartsWith: String,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>> {
+        return getItems(offset, limit, orderBy, nameStartsWith, fetchFromRemote, api::getCharacters)
+    }
+
     override suspend fun getComics(
         offset: Int,
         limit: Int,
@@ -75,14 +85,44 @@ class ComicBookRepositoryImpl @Inject constructor(
         return getItems(offset, limit, orderBy, titleStartsWith, fetchFromRemote, api::getComics)
     }
 
-    override suspend fun getCharacters(
+    override suspend fun getCreators(
         offset: Int,
         limit: Int,
         orderBy: OrderBy,
         nameStartsWith: String,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getItems(offset, limit, orderBy, nameStartsWith, fetchFromRemote, api::getCharacters)
+        return getItems(offset, limit, orderBy, nameStartsWith, fetchFromRemote, api::getCreators)
+    }
+
+    override suspend fun getEvents(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        titleStartsWith: String,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>> {
+        return getItems(offset, limit, orderBy, titleStartsWith, fetchFromRemote, api::getEvents)
+    }
+
+    override suspend fun getSeries(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        titleStartsWith: String,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>> {
+        return getItems(offset, limit, orderBy, titleStartsWith, fetchFromRemote, api::getSeries)
+    }
+
+    override suspend fun getStories(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        titleStartsWith: String,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>> {
+        return getItems(offset, limit, orderBy, titleStartsWith, fetchFromRemote, api::getStories)
     }
 
 }

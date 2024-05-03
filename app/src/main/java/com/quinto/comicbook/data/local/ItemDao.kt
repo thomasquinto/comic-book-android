@@ -18,7 +18,7 @@ interface ItemDao {
     suspend fun clearItems()
 
     // Changed from this to be a "starts with" search
-    //            WHERE LOWER(title) LIKE '%' || LOWER(:query) || '%'
+    //            WHERE LOWER(name) LIKE '%' || LOWER(:query) || '%'
     @Query(
         """
             SELECT * 
@@ -32,10 +32,12 @@ interface ItemDao {
 
 fun toDbOrderBy(orderBy: OrderBy): String {
     return when (orderBy) {
-        OrderBy.NAME -> "title ASC"
-        OrderBy.NAME_DESC -> "title DESC"
-        OrderBy.TITLE -> "title ASC"
-        OrderBy.TITLE_DESC -> "title DESC"
+        OrderBy.NAME -> "name ASC"
+        OrderBy.NAME_DESC -> "name DESC"
+        OrderBy.LAST_NAME -> "name ASC"
+        OrderBy.LAST_NAME_DESC -> "name DESC"
+        OrderBy.TITLE -> "name ASC"
+        OrderBy.TITLE_DESC -> "name DESC"
         OrderBy.MODIFIED -> "modified ASC"
         OrderBy.MODIFIED_DESC -> "modified DESC"
     }

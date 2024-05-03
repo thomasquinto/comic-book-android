@@ -4,9 +4,9 @@ import com.quinto.comicbook.data.remote.ComicBookApi
 import com.quinto.comicbook.domain.model.Item
 import java.util.Date
 
-data class ComicDto(
+data class CreatorDto(
     val id: Int?,
-    val title: String?,
+    val fullName: String?,
     val description: String?,
     val modified: Date?,
     val thumbnail: ThumbnailDto?,
@@ -15,7 +15,7 @@ data class ComicDto(
     override fun toItem(): Item {
         val item = Item(
             id = id ?: 0,
-            name = title ?: "",
+            name = fullName ?: "",
             description = description ?: "",
             thumbnailUrl = thumbnail?.thumbnailUrl ?: ComicBookApi.IMAGE_MISSING_URL,
             date = modified ?: Date(),

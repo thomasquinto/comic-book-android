@@ -13,7 +13,7 @@ fun HomeView(
 ) {
     Column {
         val itemListViewModel: ItemListViewModel = hiltViewModel<ItemListViewModel, ItemListViewModel.ItemListViewModelFactory>() { factory ->
-            factory.create(viewModel::getComics)
+            factory.create(viewModel::getCreators)
         }
         ItemListView(itemListViewModel)
     }

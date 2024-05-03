@@ -7,6 +7,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface ComicBookRepository {
 
+    suspend fun getCharacters(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy = OrderBy.TITLE,
+        nameStartsWith: String = "",
+        fetchFromRemote: Boolean = false
+    ): Flow<Resource<List<Item>>>
+
     suspend fun getComics(
         offset: Int,
         limit: Int,
@@ -15,11 +23,36 @@ interface ComicBookRepository {
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
 
-    suspend fun getCharacters(
+    suspend fun getCreators(
         offset: Int,
         limit: Int,
         orderBy: OrderBy = OrderBy.TITLE,
         nameStartsWith: String = "",
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
+
+    suspend fun getEvents(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy = OrderBy.TITLE,
+        nameStartsWith: String = "",
+        fetchFromRemote: Boolean = false
+    ): Flow<Resource<List<Item>>>
+
+    suspend fun getSeries(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy = OrderBy.TITLE,
+        titleStartsWith: String = "",
+        fetchFromRemote: Boolean = false
+    ): Flow<Resource<List<Item>>>
+
+    suspend fun getStories(
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy = OrderBy.TITLE,
+        titleStartsWith: String = "",
+        fetchFromRemote: Boolean = false
+    ): Flow<Resource<List<Item>>>
+
 }

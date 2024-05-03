@@ -4,7 +4,7 @@ import com.quinto.comicbook.data.remote.ComicBookApi
 import com.quinto.comicbook.domain.model.Item
 import java.util.Date
 
-data class ComicDto(
+data class EventDto(
     val id: Int?,
     val title: String?,
     val description: String?,
