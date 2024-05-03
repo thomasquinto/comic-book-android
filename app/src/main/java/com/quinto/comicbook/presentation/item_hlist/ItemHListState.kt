@@ -9,6 +9,6 @@ data class ItemHListState(
     val isRefreshing: Boolean = false,
     var offset: Int = 0,
     var limit: Int = 20,
-    var orderBy: OrderBy = OrderBy.TITLE,
+    var orderBy: OrderBy = OrderBy.MODIFIED_DESC,
     val searchText: String = "",
 )

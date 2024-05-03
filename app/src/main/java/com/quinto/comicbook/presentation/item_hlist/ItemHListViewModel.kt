@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = ItemHListViewModel.ItemListViewModelFactory::class)
-class ItemHListViewModel @AssistedInject constructor (
+open class ItemHListViewModel @AssistedInject constructor (
     @Assisted private val getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>
 ): ViewModel() {
 
