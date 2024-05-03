@@ -16,13 +16,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = ItemHListViewModel.ItemListViewModelFactory::class)
-open class ItemHListViewModel @AssistedInject constructor (
-    @Assisted private val getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>
-): ViewModel() {
+open class ItemHListViewModel @AssistedInject constructor(
+    @Assisted private val getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>,
+    @Assisted open val title: String
+) : ViewModel() {
 
     @AssistedFactory
     interface ItemListViewModelFactory {
-        fun create(getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>): ItemHListViewModel
+        fun create(
+            getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>,
+            title: String
+        ): ItemHListViewModel
     }
 
     var state by mutableStateOf(ItemHListState())
@@ -32,7 +36,7 @@ open class ItemHListViewModel @AssistedInject constructor (
     }
 
     fun onEvent(event: ItemHListEvent) {
-        when(event) {
+        when (event) {
             is ItemHListEvent.LoadMore -> {
                 getItems(reset = false)
             }
@@ -50,7 +54,7 @@ open class ItemHListViewModel @AssistedInject constructor (
         viewModelScope.launch {
             getItems(state.offset, state.limit, state.orderBy, "", false)
                 .collect { result ->
-                    when(result) {
+                    when (result) {
                         is Resource.Success -> {
                             result.data?.let {
                                 state = if (state.offset == 0) {
@@ -64,6 +68,7 @@ open class ItemHListViewModel @AssistedInject constructor (
                                 }
                             }
                         }
+
                         is Resource.Error -> Unit
                         is Resource.Loading -> {
                             state = state.copy(isLoading = result.isLoading)

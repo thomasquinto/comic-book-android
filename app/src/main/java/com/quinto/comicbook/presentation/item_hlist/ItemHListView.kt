@@ -58,7 +58,12 @@ fun ItemHListView(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = 8.dp,
+                vertical = 2.dp
+            )
     ) {
 
         Row(
@@ -71,7 +76,7 @@ fun ItemHListView(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = "Items",
+                text = viewModel.title,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
