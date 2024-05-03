@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.quinto.comicbook.data.remote.OrderBy
 
 @Dao
 interface ItemDao {
@@ -27,4 +28,15 @@ interface ItemDao {
         """
     )
     suspend fun searchItems(query: String, orderBy: String): List<ItemEntity>
+}
+
+fun toDbOrderBy(orderBy: OrderBy): String {
+    return when (orderBy) {
+        OrderBy.NAME -> "title ASC"
+        OrderBy.NAME_DESC -> "title DESC"
+        OrderBy.TITLE -> "title ASC"
+        OrderBy.TITLE_DESC -> "title DESC"
+        OrderBy.MODIFIED -> "modified ASC"
+        OrderBy.MODIFIED_DESC -> "modified DESC"
+    }
 }

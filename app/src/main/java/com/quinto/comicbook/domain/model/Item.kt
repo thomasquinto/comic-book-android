@@ -10,11 +10,3 @@ data class Item(
     val thumbnailUrl: String,
 )
 
-enum class OrderBy(val value: String) {
-    NAME("name"),
-    NAME_DESC("-name"),
-    TITLE("title"),
-    TITLE_DESC("-title"),
-    MODIFIED("modified"),
-    MODIFIED_DESC("-modified"),
-}

@@ -1,7 +1,7 @@
 package com.quinto.comicbook.presentation.item_list
 
 import com.quinto.comicbook.domain.model.Item
-import com.quinto.comicbook.domain.model.OrderBy
+import com.quinto.comicbook.data.remote.OrderBy
 
 data class ItemListState(
     val items: List<Item> = emptyList(),

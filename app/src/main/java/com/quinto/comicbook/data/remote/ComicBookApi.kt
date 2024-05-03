@@ -51,3 +51,12 @@ private fun String.md5(): String {
         "%02x".format(it)
     }
 }
+
+enum class OrderBy(val value: String) {
+    NAME("name"),
+    NAME_DESC("-name"),
+    TITLE("title"),
+    TITLE_DESC("-title"),
+    MODIFIED("modified"),
+    MODIFIED_DESC("-modified"),
+}

@@ -2,11 +2,10 @@ package com.quinto.comicbook.data.repository
 
 import com.quinto.comicbook.data.local.ComicBookDatabase
 import com.quinto.comicbook.data.remote.ComicBookApi
-import com.quinto.comicbook.data.repository.dto.CharacterDto
 import com.quinto.comicbook.data.repository.dto.MappedItem
 import com.quinto.comicbook.data.repository.dto.ResponseDto
 import com.quinto.comicbook.domain.model.Item
-import com.quinto.comicbook.domain.model.OrderBy
+import com.quinto.comicbook.data.remote.OrderBy
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import com.quinto.comicbook.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.reflect.KSuspendFunction7
 
 class ComicBookRepositoryImpl @Inject constructor(
     private val api: ComicBookApi,

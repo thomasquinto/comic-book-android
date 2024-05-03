@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quinto.comicbook.domain.model.Item
-import com.quinto.comicbook.domain.model.OrderBy
+import com.quinto.comicbook.data.remote.OrderBy
 import com.quinto.comicbook.util.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -68,12 +68,12 @@ class ItemListViewModel @AssistedInject constructor (
                     when(result) {
                         is Resource.Success -> {
                             result.data?.let {
-                                if (state.offset == 0) {
-                                    state = state.copy(
+                                state = if (state.offset == 0) {
+                                    state.copy(
                                         items = it
                                     )
                                 } else {
-                                    state = state.copy(
+                                    state.copy(
                                         items = state.items + it
                                     )
                                 }

@@ -2,7 +2,7 @@ package com.quinto.comicbook.presentation.home
 
 import androidx.lifecycle.ViewModel
 import com.quinto.comicbook.domain.model.Item
-import com.quinto.comicbook.domain.model.OrderBy
+import com.quinto.comicbook.data.remote.OrderBy
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import com.quinto.comicbook.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
