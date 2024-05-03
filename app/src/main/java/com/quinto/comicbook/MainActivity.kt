@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.quinto.comicbook.presentation.home.HomeView
-import com.quinto.comicbook.presentation.item_list.ItemListView
-import com.quinto.comicbook.presentation.item_list.ItemListViewModel
 import com.quinto.comicbook.ui.theme.ComicBookTheme
 import dagger.hilt.android.AndroidEntryPoint
 

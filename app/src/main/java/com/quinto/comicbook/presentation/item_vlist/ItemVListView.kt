@@ -1,4 +1,4 @@
-package com.quinto.comicbook.presentation.item_list
+package com.quinto.comicbook.presentation.item_vlist
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.layout.Column
@@ -38,8 +38,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.quinto.comicbook.domain.model.Item
 
 @Composable
-fun ItemListView(
-    viewModel: ItemListViewModel = viewModel()
+fun ItemVListView(
+    viewModel: ItemVListViewModel = viewModel()
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = viewModel.state.isRefreshing
@@ -57,7 +57,7 @@ fun ItemListView(
     }
     // load more if scrolled to bottom
     LaunchedEffect(reachedBottom) {
-        if (reachedBottom) viewModel.onEvent(ItemListEvent.LoadMore)
+        if (reachedBottom) viewModel.onEvent(ItemVListEvent.LoadMore)
     }
 
     Column(
@@ -67,7 +67,7 @@ fun ItemListView(
             value = state.searchText,
             onValueChange = {
                 viewModel.onEvent(
-                    ItemListEvent.OnSearchQueryChange(it)
+                    ItemVListEvent.OnSearchQueryChange(it)
                 )
             },
             modifier = Modifier
@@ -82,7 +82,7 @@ fun ItemListView(
         SwipeRefresh(
             state = swipeRefreshState,
             onRefresh = {
-                viewModel.onEvent(ItemListEvent.Refresh)
+                viewModel.onEvent(ItemVListEvent.Refresh)
             }
         ) {
             LazyColumn (

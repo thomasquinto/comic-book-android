@@ -1,4 +1,4 @@
-package com.quinto.comicbook.presentation.item_list
+package com.quinto.comicbook.presentation.item_vlist
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,17 +17,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = ItemListViewModel.ItemListViewModelFactory::class)
-class ItemListViewModel @AssistedInject constructor (
+@HiltViewModel(assistedFactory = ItemVListViewModel.ItemListViewModelFactory::class)
+class ItemVListViewModel @AssistedInject constructor (
     @Assisted private val getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>
 ): ViewModel() {
 
     @AssistedFactory
     interface ItemListViewModelFactory {
-        fun create(getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>): ItemListViewModel
+        fun create(getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>): ItemVListViewModel
     }
 
-    var state by mutableStateOf(ItemListState())
+    var state by mutableStateOf(ItemVListState())
 
     private var searchItems: Job? = null
 
@@ -35,12 +35,12 @@ class ItemListViewModel @AssistedInject constructor (
         getItems()
     }
 
-    fun onEvent(event: ItemListEvent) {
+    fun onEvent(event: ItemVListEvent) {
         when(event) {
-            is ItemListEvent.Refresh -> {
+            is ItemVListEvent.Refresh -> {
                 getItems(reset = true)
             }
-            is ItemListEvent.OnSearchQueryChange -> {
+            is ItemVListEvent.OnSearchQueryChange -> {
                 state = state.copy(searchText = event.query)
                 searchItems?.cancel()
                 searchItems = viewModelScope.launch {
@@ -48,7 +48,7 @@ class ItemListViewModel @AssistedInject constructor (
                     getItems(reset = true)
                 }
             }
-            is ItemListEvent.LoadMore -> {
+            is ItemVListEvent.LoadMore -> {
                 getItems(reset = false)
             }
         }

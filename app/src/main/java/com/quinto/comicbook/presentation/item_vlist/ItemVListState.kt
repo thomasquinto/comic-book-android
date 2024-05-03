@@ -1,9 +1,9 @@
-package com.quinto.comicbook.presentation.item_list
+package com.quinto.comicbook.presentation.item_vlist
 
 import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.data.remote.OrderBy
 
-data class ItemListState(
+data class ItemVListState(
     val items: List<Item> = emptyList(),
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
