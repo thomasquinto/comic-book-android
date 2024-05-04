@@ -5,27 +5,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.quinto.comicbook.data.remote.OrderBy
-import com.quinto.comicbook.domain.model.Item
+import com.quinto.comicbook.domain.repository.ComicBookRepository
+import com.quinto.comicbook.domain.repository.getFetchItems
 import com.quinto.comicbook.util.Resource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = ItemHListViewModel.ItemHListViewModelFactory::class)
 open class ItemHListViewModel @AssistedInject constructor(
-    @Assisted private val getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>,
-    @Assisted open val title: String
+    @Assisted open val itemType: String,
+    private val repository: ComicBookRepository
 ) : ViewModel() {
 
     @AssistedFactory
     interface ItemHListViewModelFactory {
         fun create(
-            getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>,
-            title: String
+            itemType: String
         ): ItemHListViewModel
     }
 
@@ -52,7 +50,7 @@ open class ItemHListViewModel @AssistedInject constructor(
             state.offset += state.limit
         }
         viewModelScope.launch {
-            getItems(state.offset, state.limit, state.orderBy, "", false)
+                getFetchItems(itemType, repository)(state.offset, state.limit, state.orderBy, "", false)
                 .collect { result ->
                     when (result) {
                         is Resource.Success -> {

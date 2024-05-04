@@ -2,6 +2,7 @@ package com.quinto.comicbook.data.repository.dto
 
 import com.quinto.comicbook.data.remote.ComicBookApi
 import com.quinto.comicbook.domain.model.Item
+import com.quinto.comicbook.domain.model.ItemType
 import java.util.Date
 
 data class ComicDto(
@@ -19,6 +20,7 @@ data class ComicDto(
             description = description ?: "",
             thumbnailUrl = thumbnail?.thumbnailUrl ?: ComicBookApi.IMAGE_MISSING_URL,
             date = modified ?: Date(),
+            itemType = ItemType.COMIC
         )
         println("Item: $item")
         return item

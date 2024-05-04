@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -36,8 +36,13 @@ import com.quinto.comicbook.domain.model.Item
 
 @Composable
 fun ItemHListView(
-    viewModel: ItemHListViewModel = viewModel()
+    itemType: String
 ) {
+    val viewModel: ItemHListViewModel =
+        hiltViewModel<ItemHListViewModel, ItemHListViewModel.ItemHListViewModelFactory>(key = itemType) { factory ->
+            factory.create(itemType)
+        }
+
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = viewModel.state.isRefreshing
     )
@@ -76,7 +81,7 @@ fun ItemHListView(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = viewModel.title,
+                text = viewModel.itemType.replaceFirstChar(Char::uppercase),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,

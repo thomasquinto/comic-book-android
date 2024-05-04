@@ -1,6 +1,5 @@
 package com.quinto.comicbook.presentation.item_vlist
 
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -39,8 +39,13 @@ import com.quinto.comicbook.domain.model.Item
 
 @Composable
 fun ItemVListView(
-    viewModel: ItemVListViewModel = viewModel()
+    itemType: String
 ) {
+    val viewModel: ItemVListViewModel =
+        hiltViewModel<ItemVListViewModel, ItemVListViewModel.ItemVListViewModelFactory>(key = itemType) { factory ->
+            factory.create(itemType)
+        }
+
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = viewModel.state.isRefreshing
     )
