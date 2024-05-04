@@ -15,14 +15,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = ItemHListViewModel.ItemListViewModelFactory::class)
+@HiltViewModel(assistedFactory = ItemHListViewModel.ItemHListViewModelFactory::class)
 open class ItemHListViewModel @AssistedInject constructor(
     @Assisted private val getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>,
     @Assisted open val title: String
 ) : ViewModel() {
 
     @AssistedFactory
-    interface ItemListViewModelFactory {
+    interface ItemHListViewModelFactory {
         fun create(
             getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>,
             title: String

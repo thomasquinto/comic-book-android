@@ -17,13 +17,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = ItemVListViewModel.ItemListViewModelFactory::class)
+@HiltViewModel(assistedFactory = ItemVListViewModel.ItemVListViewModelFactory::class)
 class ItemVListViewModel @AssistedInject constructor (
     @Assisted private val getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>
 ): ViewModel() {
 
     @AssistedFactory
-    interface ItemListViewModelFactory {
+    interface ItemVListViewModelFactory {
         fun create(getItems: suspend (Int, Int, OrderBy, String, Boolean) -> Flow<Resource<List<Item>>>): ItemVListViewModel
     }
 
