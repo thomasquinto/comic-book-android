@@ -19,10 +19,15 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.ItemType
+import com.quinto.comicbook.domain.repository.getItemTypesForDetail
+import com.quinto.comicbook.presentation.item_hlist.ItemHListView
 import java.util.Date
 
 @Composable
-fun ItemDetailView(item: Item) {
+fun ItemDetailView(
+    item: Item,
+    itemSelected: ((Item) -> Unit)? = null,
+    ) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         item {
             AsyncImage(
@@ -55,6 +60,23 @@ fun ItemDetailView(item: Item) {
                 )
             }
         }
+
+        getItemTypesForDetail(item.itemType.typeName).forEach { itemType ->
+            item {
+                ItemHListView(
+                    itemType = itemType.typeName,
+                    itemSelected = itemSelected,
+                    detailItem = item)
+            }
+        }
+/*
+        item {
+            ItemHListView(
+                itemType = ItemType.CHARACTER.typeName,
+                itemSelected = itemSelected,
+                detailItem = item)
+        }
+ */
     }
 }
 

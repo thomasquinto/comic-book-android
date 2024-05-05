@@ -118,7 +118,9 @@ fun ItemLabel(
     itemSelected: ((Item) -> Unit)? = null
 ) {
     Row(
-        modifier = Modifier.padding(4.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
             .clickable(enabled = itemSelected != null) {
             if (itemSelected != null) {
                 itemSelected(item)

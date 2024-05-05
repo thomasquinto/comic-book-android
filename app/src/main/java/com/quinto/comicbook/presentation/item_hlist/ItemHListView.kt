@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -38,11 +39,12 @@ import com.quinto.comicbook.domain.model.Item
 fun ItemHListView(
     itemType: String,
     itemTypeSelected: ((String) -> Unit)? = null,
-    itemSelected: ((Item) -> Unit)? = null
+    itemSelected: ((Item) -> Unit)? = null,
+    detailItem: Item? = null
 ) {
     val viewModel: ItemHListViewModel =
         hiltViewModel<ItemHListViewModel, ItemHListViewModel.ItemHListViewModelFactory>(key = itemType) { factory ->
-            factory.create(itemType)
+            factory.create(itemType, detailItem)
         }
 
     val state = viewModel.state
@@ -68,6 +70,7 @@ fun ItemHListView(
                 horizontal = 8.dp,
                 vertical = 2.dp
             )
+            .alpha(if (state.items.isEmpty()) 0.0f else 1.0f)
     ) {
 
         Row(
@@ -91,11 +94,13 @@ fun ItemHListView(
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Spacer(modifier = Modifier.weight(1.0f))
-            Text(
-                text = "See more",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            if (itemTypeSelected != null) {
+                Text(
+                    text = "See more",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
         LazyRow(
             state = listState

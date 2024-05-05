@@ -8,6 +8,7 @@ import com.quinto.comicbook.data.repository.dto.ResponseDto
 import com.quinto.comicbook.data.repository.dto.SeriesDto
 import com.quinto.comicbook.data.repository.dto.StoryDto
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 import java.security.MessageDigest
 
@@ -39,9 +40,9 @@ interface ComicBookApi {
     // http://gateway.marvel.com/v1/public/comics?ts=1&apikey=1234&hash=ffd275c5130566a2916217b101f26150
     @GET("comics")
     suspend fun getComics(
-        @Query("apikey") apiKey: String = ComicBookApi.PUBLIC_KEY,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
         @Query("ts") ts: Long = System.currentTimeMillis(),
-        @Query("hash") hash: String = ComicBookApi.generateHash(ts.toString()),
+        @Query("hash") hash: String = generateHash(ts.toString()),
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
@@ -50,9 +51,9 @@ interface ComicBookApi {
 
     @GET("creators")
     suspend fun getCreators(
-        @Query("apikey") apiKey: String = ComicBookApi.PUBLIC_KEY,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
         @Query("ts") ts: Long = System.currentTimeMillis(),
-        @Query("hash") hash: String = ComicBookApi.generateHash(ts.toString()),
+        @Query("hash") hash: String = generateHash(ts.toString()),
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
@@ -61,9 +62,9 @@ interface ComicBookApi {
 
     @GET("events")
     suspend fun getEvents(
-        @Query("apikey") apiKey: String = ComicBookApi.PUBLIC_KEY,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
         @Query("ts") ts: Long = System.currentTimeMillis(),
-        @Query("hash") hash: String = ComicBookApi.generateHash(ts.toString()),
+        @Query("hash") hash: String = generateHash(ts.toString()),
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
@@ -72,9 +73,9 @@ interface ComicBookApi {
 
     @GET("series")
     suspend fun getSeries(
-        @Query("apikey") apiKey: String = ComicBookApi.PUBLIC_KEY,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
         @Query("ts") ts: Long = System.currentTimeMillis(),
-        @Query("hash") hash: String = ComicBookApi.generateHash(ts.toString()),
+        @Query("hash") hash: String = generateHash(ts.toString()),
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
@@ -83,13 +84,85 @@ interface ComicBookApi {
 
     @GET("stories")
     suspend fun getStories(
-        @Query("apikey") apiKey: String = ComicBookApi.PUBLIC_KEY,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
         @Query("ts") ts: Long = System.currentTimeMillis(),
-        @Query("hash") hash: String = ComicBookApi.generateHash(ts.toString()),
+        @Query("hash") hash: String = generateHash(ts.toString()),
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
         @Query("titleStartsWith") titleStartsWith: String? = null
+    ): ResponseDto<StoryDto>
+
+    @GET("{prefix}/{id}/characters")
+    suspend fun getCharacterDetails(
+        @Path("prefix") prefix: String,
+        @Path("id") id: Int,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
+        @Query("ts") ts: Long = System.currentTimeMillis(),
+        @Query("hash") hash: String = generateHash(ts.toString()),
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("orderBy") orderBy: String,
+        ): ResponseDto<CharacterDto>
+
+    @GET("{prefix}/{id}/comics")
+    suspend fun getComicDetails(
+        @Path("prefix") prefix: String,
+        @Path("id") id: Int,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
+        @Query("ts") ts: Long = System.currentTimeMillis(),
+        @Query("hash") hash: String = generateHash(ts.toString()),
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("orderBy") orderBy: String,
+    ): ResponseDto<ComicDto>
+
+    @GET("{prefix}/{id}/creators")
+    suspend fun getCreatorDetails(
+        @Path("prefix") prefix: String,
+        @Path("id") id: Int,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
+        @Query("ts") ts: Long = System.currentTimeMillis(),
+        @Query("hash") hash: String = generateHash(ts.toString()),
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("orderBy") orderBy: String,
+    ): ResponseDto<CreatorDto>
+
+    @GET("{prefix}/{id}/events")
+    suspend fun getEventDetails(
+        @Path("prefix") prefix: String,
+        @Path("id") id: Int,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
+        @Query("ts") ts: Long = System.currentTimeMillis(),
+        @Query("hash") hash: String = generateHash(ts.toString()),
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("orderBy") orderBy: String,
+    ): ResponseDto<EventDto>
+
+    @GET("{prefix}/{id}/series")
+    suspend fun getSeriesDetails(
+        @Path("prefix") prefix: String,
+        @Path("id") id: Int,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
+        @Query("ts") ts: Long = System.currentTimeMillis(),
+        @Query("hash") hash: String = generateHash(ts.toString()),
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("orderBy") orderBy: String,
+    ): ResponseDto<SeriesDto>
+
+    @GET("{prefix}/{id}/stories")
+    suspend fun getStoryDetails(
+        @Path("prefix") prefix: String,
+        @Path("id") id: Int,
+        @Query("apikey") apiKey: String = PUBLIC_KEY,
+        @Query("ts") ts: Long = System.currentTimeMillis(),
+        @Query("hash") hash: String = generateHash(ts.toString()),
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int,
+        @Query("orderBy") orderBy: String,
     ): ResponseDto<StoryDto>
 }
 

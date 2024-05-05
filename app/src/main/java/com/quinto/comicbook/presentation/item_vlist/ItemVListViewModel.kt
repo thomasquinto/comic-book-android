@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = ItemVListViewModel.ItemVListViewModelFactory::class)
 class ItemVListViewModel @AssistedInject constructor (
-    @Assisted  val itemType: String,
+    @Assisted val itemType: String,
     private val repository: ComicBookRepository
 ): ViewModel() {
 

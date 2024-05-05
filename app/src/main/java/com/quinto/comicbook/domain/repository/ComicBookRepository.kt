@@ -55,6 +55,60 @@ interface ComicBookRepository {
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
 
+    suspend fun getCharacterDetails(
+        prefix: String,
+        id: Int,
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>>
+
+    suspend fun getComicDetails(
+        prefix: String,
+        id: Int,
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>>
+
+    suspend fun getCreatorDetails(
+        prefix: String,
+        id: Int,
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>>
+
+    suspend fun getEventDetails(
+        prefix: String,
+        id: Int,
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>>
+
+    suspend fun getSeriesDetails(
+        prefix: String,
+        id: Int,
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>>
+
+    suspend fun getStoryDetails(
+        prefix: String,
+        id: Int,
+        offset: Int,
+        limit: Int,
+        orderBy: OrderBy,
+        fetchFromRemote: Boolean
+    ): Flow<Resource<List<Item>>>
+
     suspend fun saveItem(item: Item)
 
     suspend fun retrieveItem(itemId: Int): Item

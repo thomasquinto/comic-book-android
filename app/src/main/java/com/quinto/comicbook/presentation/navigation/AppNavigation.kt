@@ -82,7 +82,7 @@ fun AppNavigation (
             val item = runBlocking {
                 repository.retrieveItem(itemId)
             }
-            ItemDetailView(item)
+            ItemDetailView(item, actions.itemSelected)
         }
 
     }
