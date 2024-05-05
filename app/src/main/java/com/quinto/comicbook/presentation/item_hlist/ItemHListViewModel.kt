@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.repository.ComicBookRepository
+import com.quinto.comicbook.domain.repository.getDefaultOrderBy
 import com.quinto.comicbook.domain.repository.getFetchDetails
 import com.quinto.comicbook.domain.repository.getFetchItems
 import com.quinto.comicbook.util.Resource
@@ -62,7 +63,7 @@ open class ItemHListViewModel @AssistedInject constructor(
                     detailItem.id,
                     state.offset,
                     state.limit,
-                    state.orderBy,
+                    getDefaultOrderBy(itemType),
                     false
                 )
             } else {

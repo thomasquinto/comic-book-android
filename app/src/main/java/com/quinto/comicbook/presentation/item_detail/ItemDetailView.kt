@@ -69,14 +69,6 @@ fun ItemDetailView(
                     detailItem = item)
             }
         }
-/*
-        item {
-            ItemHListView(
-                itemType = ItemType.CHARACTER.typeName,
-                itemSelected = itemSelected,
-                detailItem = item)
-        }
- */
     }
 }
 

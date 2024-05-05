@@ -8,7 +8,6 @@ import com.quinto.comicbook.data.remote.OrderBy
 import com.quinto.comicbook.data.repository.dto.MappedItem
 import com.quinto.comicbook.data.repository.dto.ResponseDto
 import com.quinto.comicbook.domain.model.Item
-import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import com.quinto.comicbook.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -244,6 +243,6 @@ class ComicBookRepositoryImpl @Inject constructor(
     }
 
     override suspend fun retrieveItem(itemId: Int): Item {
-        return dao.retrieveItem(itemId).toItem(ItemType.COMIC)
+        return dao.retrieveItem(itemId).toItem()
     }
 }

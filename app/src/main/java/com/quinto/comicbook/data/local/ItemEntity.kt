@@ -10,5 +10,6 @@ data class ItemEntity(
     val name: String? = null,
     val description: String? = null,
     val date: Date? = null,
-    val thumbnailUrl: String? = null
+    val thumbnailUrl: String? = null,
+    val itemType: String? = null
 )

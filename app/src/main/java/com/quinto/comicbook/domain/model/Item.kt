@@ -21,7 +21,7 @@ enum class ItemType(val typeName: String) {
 
     companion object {
         fun byName(input: String): ItemType? {
-            return values().firstOrNull { it.name.equals(input, true) }
+            return entries.firstOrNull { it.typeName.equals(input, true) }
         }
     }
 }
