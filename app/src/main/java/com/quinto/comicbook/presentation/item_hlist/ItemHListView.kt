@@ -1,5 +1,6 @@
 package com.quinto.comicbook.presentation.item_hlist
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,21 +32,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.quinto.comicbook.domain.model.Item
 
 @Composable
 fun ItemHListView(
-    itemType: String
+    itemType: String,
+    selected: ((String) -> Unit)? = null
 ) {
     val viewModel: ItemHListViewModel =
         hiltViewModel<ItemHListViewModel, ItemHListViewModel.ItemHListViewModelFactory>(key = itemType) { factory ->
             factory.create(itemType)
         }
 
-    val swipeRefreshState = rememberSwipeRefreshState(
-        isRefreshing = viewModel.state.isRefreshing
-    )
     val state = viewModel.state
 
     val listState = rememberLazyListState()
@@ -73,6 +71,11 @@ fun ItemHListView(
 
         Row(
             modifier = Modifier
+                .clickable(enabled = selected != null) {
+                    if (selected != null) {
+                        selected(itemType)
+                    }
+                }
                 .padding(
                     top = 4.dp,
                     bottom = 4.dp
@@ -91,6 +94,12 @@ fun ItemHListView(
                 text = "See more",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .clickable {
+                        if (selected != null) {
+                            selected(itemType)
+                        }
+                    }
             )
         }
         LazyRow(

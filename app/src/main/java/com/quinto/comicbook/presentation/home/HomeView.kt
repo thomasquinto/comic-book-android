@@ -15,7 +15,7 @@ import com.quinto.comicbook.presentation.item_hlist.ItemHListView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView() {
+fun HomeView(itemTypeSelected: ((String) -> Unit)? = null) {
 
     Scaffold(
         topBar = {
@@ -35,22 +35,22 @@ fun HomeView() {
                 modifier = Modifier.padding(paddingValues)
             ) {
                 item {
-                    ItemHListView(ItemType.COMIC.typeName)
+                    ItemHListView(ItemType.COMIC.typeName, itemTypeSelected)
                 }
                 item {
-                    ItemHListView(ItemType.CHARACTER.typeName)
+                    ItemHListView(ItemType.CHARACTER.typeName, itemTypeSelected)
                 }
                 item {
-                    ItemHListView(ItemType.SERIES.typeName)
+                    ItemHListView(ItemType.SERIES.typeName, itemTypeSelected)
                 }
                 item {
-                    ItemHListView(ItemType.CREATOR.typeName)
+                    ItemHListView(ItemType.CREATOR.typeName, itemTypeSelected)
                 }
                 item {
-                    ItemHListView(ItemType.EVENT.typeName)
+                    ItemHListView(ItemType.EVENT.typeName, itemTypeSelected)
                 }
                 item {
-                    ItemHListView(ItemType.STORY.typeName)
+                    ItemHListView(ItemType.STORY.typeName, itemTypeSelected)
                 }
             }
         }

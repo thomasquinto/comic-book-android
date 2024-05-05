@@ -50,6 +50,7 @@ open class ItemHListViewModel @AssistedInject constructor(
             state.offset += state.limit
         }
         viewModelScope.launch {
+            //val orderBy = getDefaultOrderBy(itemType)
                 getFetchItems(itemType, repository)(state.offset, state.limit, state.orderBy, "", false)
                 .collect { result ->
                     when (result) {

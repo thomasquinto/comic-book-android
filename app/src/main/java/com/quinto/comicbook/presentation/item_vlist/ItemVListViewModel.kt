@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quinto.comicbook.domain.repository.ComicBookRepository
+import com.quinto.comicbook.domain.repository.getDefaultOrderBy
 import com.quinto.comicbook.domain.repository.getFetchItems
 import com.quinto.comicbook.util.Resource
 import dagger.assisted.Assisted
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = ItemVListViewModel.ItemVListViewModelFactory::class)
 class ItemVListViewModel @AssistedInject constructor (
-    @Assisted open val itemType: String,
+    @Assisted  val itemType: String,
     private val repository: ComicBookRepository
 ): ViewModel() {
 
@@ -65,7 +66,8 @@ class ItemVListViewModel @AssistedInject constructor (
             state.offset += state.limit
         }
         viewModelScope.launch {
-            getFetchItems(itemType, repository)(state.offset, state.limit, state.orderBy, state.searchText, false)
+            val orderBy = getDefaultOrderBy(itemType)
+            getFetchItems(itemType, repository)(state.offset, state.limit, orderBy, state.searchText, false)
                 .collect { result ->
                     when(result) {
                         is Resource.Success -> {
