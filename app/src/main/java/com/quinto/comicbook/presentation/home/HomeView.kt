@@ -10,12 +10,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.presentation.item_hlist.ItemHListView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView(itemTypeSelected: ((String) -> Unit)? = null) {
+fun HomeView(
+    itemTypeSelected: ((String) -> Unit)? = null,
+    itemSelected: ((Item) -> Unit)? = null
+) {
 
     Scaffold(
         topBar = {
@@ -35,19 +39,19 @@ fun HomeView(itemTypeSelected: ((String) -> Unit)? = null) {
                 modifier = Modifier.padding(paddingValues)
             ) {
                 item {
-                    ItemHListView(ItemType.COMIC.typeName, itemTypeSelected)
+                    ItemHListView(ItemType.COMIC.typeName, itemTypeSelected, itemSelected)
                 }
                 item {
-                    ItemHListView(ItemType.CHARACTER.typeName, itemTypeSelected)
+                    ItemHListView(ItemType.CHARACTER.typeName, itemTypeSelected, itemSelected)
                 }
                 item {
-                    ItemHListView(ItemType.SERIES.typeName, itemTypeSelected)
+                    ItemHListView(ItemType.SERIES.typeName, itemTypeSelected, itemSelected)
                 }
                 item {
-                    ItemHListView(ItemType.CREATOR.typeName, itemTypeSelected)
+                    ItemHListView(ItemType.CREATOR.typeName, itemTypeSelected, itemSelected)
                 }
                 item {
-                    ItemHListView(ItemType.EVENT.typeName, itemTypeSelected)
+                    ItemHListView(ItemType.EVENT.typeName, itemTypeSelected, itemSelected)
                 }
                 item {
                     ItemHListView(ItemType.STORY.typeName, itemTypeSelected)

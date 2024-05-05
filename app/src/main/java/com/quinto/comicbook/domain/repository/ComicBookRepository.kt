@@ -55,4 +55,7 @@ interface ComicBookRepository {
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
 
+    suspend fun saveItem(item: Item)
+
+    suspend fun retrieveItem(itemId: Int): Item
 }

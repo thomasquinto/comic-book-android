@@ -11,7 +11,7 @@ interface ItemDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItems(
-        comicEntities: List<ItemEntity>
+        itemEntities: List<ItemEntity>
     )
 
     @Query("DELETE FROM itementity")
@@ -28,6 +28,24 @@ interface ItemDao {
         """
     )
     suspend fun searchItems(query: String, orderBy: String): List<ItemEntity>
+
+    @Query(
+        """
+            SELECT * 
+            FROM itementity
+            WHERE LOWER(name) LIKE LOWER(:query) || '%'
+            ORDER BY (:orderBy)
+        """
+    )
+    suspend fun searchItemsBy(query: String, orderBy: String): List<ItemEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveItem(
+        itemEntity: ItemEntity
+    )
+
+    @Query("SELECT * FROM itementity WHERE id = :itemId")
+   suspend fun retrieveItem(itemId: Int): ItemEntity
 }
 
 fun toDbOrderBy(orderBy: OrderBy): String {

@@ -37,7 +37,8 @@ import com.quinto.comicbook.domain.model.Item
 @Composable
 fun ItemHListView(
     itemType: String,
-    selected: ((String) -> Unit)? = null
+    itemTypeSelected: ((String) -> Unit)? = null,
+    itemSelected: ((Item) -> Unit)? = null
 ) {
     val viewModel: ItemHListViewModel =
         hiltViewModel<ItemHListViewModel, ItemHListViewModel.ItemHListViewModelFactory>(key = itemType) { factory ->
@@ -71,9 +72,9 @@ fun ItemHListView(
 
         Row(
             modifier = Modifier
-                .clickable(enabled = selected != null) {
-                    if (selected != null) {
-                        selected(itemType)
+                .clickable(enabled = itemTypeSelected != null) {
+                    if (itemTypeSelected != null) {
+                        itemTypeSelected(itemType)
                     }
                 }
                 .padding(
@@ -93,13 +94,7 @@ fun ItemHListView(
             Text(
                 text = "See more",
                 fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .clickable {
-                        if (selected != null) {
-                            selected(itemType)
-                        }
-                    }
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
         LazyRow(
@@ -108,7 +103,7 @@ fun ItemHListView(
             items(state.items.size) {
                 ItemLabel(
                     item = state.items[it],
-                    modifier = Modifier
+                    itemSelected = itemSelected
                 )
             }
             if (viewModel.state.isLoading) {
@@ -123,12 +118,17 @@ fun ItemHListView(
 @Composable
 fun ItemLabel(
     item: Item,
-    modifier: Modifier
+    itemSelected: ((Item) -> Unit)? = null
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .width(108.dp)
-            .padding(4.dp),
+            .padding(4.dp)
+            .clickable(enabled = itemSelected != null) {
+                if (itemSelected != null) {
+                    itemSelected(item)
+                }
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
@@ -141,6 +141,12 @@ fun ItemLabel(
             modifier = Modifier
                 .width(100.dp)
                 .height(100.dp)
+                .clickable(enabled = itemSelected != null) {
+                    println("Item selected: $item")
+                    if (itemSelected != null) {
+                        itemSelected(item)
+                    }
+                }
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(

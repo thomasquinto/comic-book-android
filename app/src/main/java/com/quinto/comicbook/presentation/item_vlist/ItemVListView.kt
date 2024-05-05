@@ -1,5 +1,6 @@
 package com.quinto.comicbook.presentation.item_vlist
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,7 +40,8 @@ import com.quinto.comicbook.domain.model.Item
 
 @Composable
 fun ItemVListView(
-    itemType: String
+    itemType: String,
+    itemSelected: ((Item) -> Unit)? = null
 ) {
     val viewModel: ItemVListViewModel =
         hiltViewModel<ItemVListViewModel, ItemVListViewModel.ItemVListViewModelFactory>(key = itemType) { factory ->
@@ -97,7 +99,7 @@ fun ItemVListView(
                 items(state.items.size) {
                     ItemLabel(
                         item = state.items[it],
-                        modifier = Modifier
+                        itemSelected = itemSelected
                     )
                 }
                 if (viewModel.state.isLoading) {
@@ -113,10 +115,15 @@ fun ItemVListView(
 @Composable
 fun ItemLabel(
     item: Item,
-    modifier: Modifier
+    itemSelected: ((Item) -> Unit)? = null
 ) {
     Row(
-        modifier = modifier.padding(4.dp),
+        modifier = Modifier.padding(4.dp)
+            .clickable(enabled = itemSelected != null) {
+            if (itemSelected != null) {
+                itemSelected(item)
+            }
+        },
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
