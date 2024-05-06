@@ -11,10 +11,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -37,11 +44,15 @@ import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.quinto.comicbook.domain.model.Item
+import com.quinto.comicbook.domain.model.ItemType
+import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemVListView(
     itemType: String,
-    itemSelected: ((Item) -> Unit)? = null
+    itemSelected: ((Item) -> Unit)? = null,
+    backClicked: (() -> Unit)? = null
 ) {
     val viewModel: ItemVListViewModel =
         hiltViewModel<ItemVListViewModel, ItemVListViewModel.ItemVListViewModelFactory>(key = itemType) { factory ->
@@ -67,49 +78,74 @@ fun ItemVListView(
         if (reachedBottom) viewModel.onEvent(ItemVListEvent.LoadMore)
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        OutlinedTextField(
-            value = state.searchText,
-            onValueChange = {
-                viewModel.onEvent(
-                    ItemVListEvent.OnSearchQueryChange(it)
-                )
-            },
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            placeholder = {
-                Text(text = "Search")
-            },
-            maxLines = 1,
-            singleLine = true
-        )
-        SwipeRefresh(
-            state = swipeRefreshState,
-            onRefresh = {
-                viewModel.onEvent(ItemVListEvent.Refresh)
-            }
-        ) {
-            LazyColumn (
-                modifier = Modifier.fillMaxWidth(),
-                state = listState
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = itemType.replaceFirstChar { it.uppercase(Locale.getDefault()) },
+                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                },
+                navigationIcon =  {
+                    IconButton(onClick = { backClicked?.invoke() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
             ) {
-                items(state.items.size) {
-                    ItemLabel(
-                        item = state.items[it],
-                        itemSelected = itemSelected
+                if (itemType != ItemType.STORY.typeName) {
+                    OutlinedTextField(
+                        value = state.searchText,
+                        onValueChange = {
+                            viewModel.onEvent(
+                                ItemVListEvent.OnSearchQueryChange(it)
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                            .fillMaxWidth(),
+                        placeholder = {
+                            Text(text = "Search")
+                        },
+                        maxLines = 1,
+                        singleLine = true
                     )
                 }
-                if (viewModel.state.isLoading) {
-                    item {
-                        LoadingItem()
+                SwipeRefresh(
+                    state = swipeRefreshState,
+                    onRefresh = {
+                        viewModel.onEvent(ItemVListEvent.Refresh)
+                    }
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        state = listState
+                    ) {
+                        items(state.items.size) {
+                            ItemLabel(
+                                item = state.items[it],
+                                itemSelected = itemSelected
+                            )
+                        }
+                        if (viewModel.state.isLoading) {
+                            item {
+                                LoadingItem()
+                            }
+                        }
                     }
                 }
             }
         }
-    }
+    )
 }
 
 @Composable

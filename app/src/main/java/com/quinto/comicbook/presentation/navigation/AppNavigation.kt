@@ -66,7 +66,7 @@ fun AppNavigation (
         ) { backStackEntry ->
             val arguments = requireNotNull(backStackEntry.arguments)
             val itemType = arguments.getString(ITEM_TYPE_KEY)
-            ItemVListView(itemType!!, actions.itemSelected)
+            ItemVListView(itemType!!, actions.itemSelected, actions.backClicked)
         }
 
         composable(
@@ -82,7 +82,7 @@ fun AppNavigation (
             val item = runBlocking {
                 repository.retrieveItem(itemId)
             }
-            ItemDetailView(item, actions.itemSelected)
+            ItemDetailView(item, actions.itemSelected, actions.backClicked)
         }
 
     }
@@ -102,5 +102,8 @@ private class AppActions(
             repository.saveItem(item)
             navController.navigate("$DETAIL/${item.id}")
         }
+    }
+    val backClicked: () -> Unit = {
+        navController.popBackStack()
     }
 }

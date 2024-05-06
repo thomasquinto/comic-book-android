@@ -31,7 +31,7 @@ fun HomeView(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-                }, // Set the navigation title here
+                }
             )
         },
         content = { paddingValues ->

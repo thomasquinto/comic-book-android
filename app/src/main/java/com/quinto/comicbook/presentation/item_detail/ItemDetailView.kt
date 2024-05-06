@@ -6,8 +6,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -23,53 +30,83 @@ import com.quinto.comicbook.domain.repository.getItemTypesForDetail
 import com.quinto.comicbook.presentation.item_hlist.ItemHListView
 import java.util.Date
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemDetailView(
     item: Item,
     itemSelected: ((Item) -> Unit)? = null,
+    backClicked: (() -> Unit)? = null
     ) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        item {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.thumbnailUrl)
-                    .crossfade(true)
-                    .build(),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "",//item.itemType.typeName.replaceFirstChar { it.uppercase(Locale.getDefault()) },
+                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                },
+                navigationIcon =  {
+                    IconButton(onClick = { backClicked?.invoke() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        },
+        content = { paddingValues ->
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp)
-            )
-        }
+                    .padding(paddingValues)
+            ) {
+                item {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(item.thumbnailUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(400.dp)
+                    )
+                }
 
-        item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
-                Text(
-                    text = item.name,
-                    fontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = item.description,
-                    fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-                    //fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.secondary,
-                )
+                item {
+                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
+                        Text(
+                            text = item.name,
+                            fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = item.description,
+                            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                            //fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                }
+
+                getItemTypesForDetail(item.itemType.typeName).forEach { itemType ->
+                    item {
+                        ItemHListView(
+                            itemType = itemType.typeName,
+                            itemSelected = itemSelected,
+                            detailItem = item
+                        )
+                    }
+                }
             }
         }
+    )
 
-        getItemTypesForDetail(item.itemType.typeName).forEach { itemType ->
-            item {
-                ItemHListView(
-                    itemType = itemType.typeName,
-                    itemSelected = itemSelected,
-                    detailItem = item)
-            }
-        }
-    }
 }
 
 @Preview(showBackground = true)
