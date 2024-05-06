@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.quinto.comicbook.domain.model.Item
-import com.quinto.comicbook.domain.model.ItemType
+import com.quinto.comicbook.domain.repository.getItemTypesForHome
 import com.quinto.comicbook.presentation.item_hlist.ItemHListView
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,24 +38,10 @@ fun HomeView(
             LazyColumn(
                 modifier = Modifier.padding(paddingValues)
             ) {
-
-                item {
-                    ItemHListView(ItemType.COMIC.typeName, itemTypeSelected, itemSelected)
-                }
-                item {
-                    ItemHListView(ItemType.CHARACTER.typeName, itemTypeSelected, itemSelected)
-                }
-                item {
-                    ItemHListView(ItemType.SERIES.typeName, itemTypeSelected, itemSelected)
-                }
-                item {
-                    ItemHListView(ItemType.CREATOR.typeName, itemTypeSelected, itemSelected)
-                }
-                item {
-                    ItemHListView(ItemType.EVENT.typeName, itemTypeSelected, itemSelected)
-                }
-                item {
-                    ItemHListView(ItemType.STORY.typeName, itemTypeSelected, itemSelected)
+                getItemTypesForHome().forEach { itemType ->
+                    item {
+                        ItemHListView(itemType.typeName, itemTypeSelected, itemSelected)
+                    }
                 }
             }
         }

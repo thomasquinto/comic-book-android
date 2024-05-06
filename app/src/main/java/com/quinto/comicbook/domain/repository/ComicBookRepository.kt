@@ -11,7 +11,7 @@ interface ComicBookRepository {
         offset: Int,
         limit: Int,
         orderBy: OrderBy = OrderBy.TITLE,
-        nameStartsWith: String = "",
+        startsWith: String = "",
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
 
@@ -19,7 +19,7 @@ interface ComicBookRepository {
         offset: Int,
         limit: Int,
         orderBy: OrderBy = OrderBy.TITLE,
-        titleStartsWith: String = "",
+        startsWith: String = "",
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
 
@@ -27,7 +27,7 @@ interface ComicBookRepository {
         offset: Int,
         limit: Int,
         orderBy: OrderBy = OrderBy.TITLE,
-        nameStartsWith: String = "",
+        startsWith: String = "",
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
 
@@ -35,7 +35,7 @@ interface ComicBookRepository {
         offset: Int,
         limit: Int,
         orderBy: OrderBy = OrderBy.TITLE,
-        nameStartsWith: String = "",
+        startsWith: String = "",
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
 
@@ -43,7 +43,7 @@ interface ComicBookRepository {
         offset: Int,
         limit: Int,
         orderBy: OrderBy = OrderBy.TITLE,
-        titleStartsWith: String = "",
+        startsWith: String = "",
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
 
@@ -51,7 +51,7 @@ interface ComicBookRepository {
         offset: Int,
         limit: Int,
         orderBy: OrderBy = OrderBy.TITLE,
-        titleStartsWith: String = "",
+        startsWith: String = "",
         fetchFromRemote: Boolean = false
     ): Flow<Resource<List<Item>>>
 

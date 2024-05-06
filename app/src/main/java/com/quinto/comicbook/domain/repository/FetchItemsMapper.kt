@@ -33,6 +33,15 @@ fun getItemTypesForDetail(itemType: String) = when (itemType) {
     else -> throw IllegalArgumentException("Unknown item type: $itemType")
 }
 
+fun getItemTypesForHome() = listOf(
+    ItemType.COMIC,
+    ItemType.CHARACTER,
+    ItemType.SERIES,
+    ItemType.CREATOR,
+    ItemType.EVENT,
+    ItemType.STORY
+)
+
 fun getDefaultOrderBy(itemType: String) = when (itemType) {
     "characters" -> OrderBy.NAME
     "comics" -> OrderBy.TITLE
