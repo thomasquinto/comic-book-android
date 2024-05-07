@@ -12,9 +12,12 @@ interface ItemRequestDao {
         itemRequest: ItemRequest
     )
 
-    @Query("SELECT * FROM itemrequest WHERE paramKey = :params AND offsetParam = :offsetParam AND limitParam = :limitParam")
-    suspend fun retrieveItemRequest(params: String, offsetParam: Int, limitParam: Int): ItemRequest?
+    @Query("SELECT * FROM itemrequest WHERE paramKey = :paramKey AND paramExtras = :paramExtras")
+    suspend fun retrieveItemRequest(paramKey: String, paramExtras: String): ItemRequest?
 
     @Query("DELETE FROM itemrequest WHERE paramKey = :paramKey")
-    suspend fun clearItemRequests(paramKey: String)
+    suspend fun clearItemRequestsForKey(paramKey: String)
+
+    @Query("DELETE FROM itemrequest")
+    suspend fun clearItemRequests()
 }

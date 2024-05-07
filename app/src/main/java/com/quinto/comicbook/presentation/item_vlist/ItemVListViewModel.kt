@@ -41,7 +41,7 @@ class ItemVListViewModel @AssistedInject constructor (
     fun onEvent(event: ItemVListEvent) {
         when(event) {
             is ItemVListEvent.Refresh -> {
-                getItems(reset = true)
+                getItems(reset = true, fetchFromRemote = true)
             }
             is ItemVListEvent.OnSearchQueryChange -> {
                 state = state.copy(searchText = event.query)
@@ -58,7 +58,8 @@ class ItemVListViewModel @AssistedInject constructor (
     }
 
     private fun getItems(
-        reset: Boolean = true
+        reset: Boolean = true,
+        fetchFromRemote: Boolean = false
     ) {
         if (reset) {
             state.offset = 0
@@ -67,7 +68,7 @@ class ItemVListViewModel @AssistedInject constructor (
         }
         viewModelScope.launch {
             val orderBy = getDefaultOrderBy(itemType)
-            getFetchItems(itemType, repository)(state.offset, state.limit, orderBy, state.searchText, false)
+            getFetchItems(itemType, repository)(state.offset, state.limit, orderBy, state.searchText, fetchFromRemote)
                 .collect { result ->
                     when(result) {
                         is Resource.Success -> {

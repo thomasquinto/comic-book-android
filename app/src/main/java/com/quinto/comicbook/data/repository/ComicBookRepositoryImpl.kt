@@ -39,16 +39,13 @@ class ComicBookRepositoryImpl @Inject constructor(
         return flow {
             emit(Resource.Loading(true))
 
+            if (fetchFromRemote) {
+                itemRequestDao.clearItemRequestsForKey(ItemRequest.generateParamKey(itemType.typeName, null, null))
+            }
+
             itemRequestDao.retrieveItemRequest(
-                ItemRequest.generateParamKey(
-                    itemType.typeName,
-                    null,
-                    null,
-                    startsWith,
-                    orderBy
-                ),
-                offset,
-                limit
+                ItemRequest.generateParamKey(itemType.typeName, null, null),
+                ItemRequest.generateParamExtras(startsWith, orderBy, offset, limit)
             )?.let { request ->
                 println("Retrieved from local db: ${request.itemIds}")
                 val itemList = itemDao.retrieveItems(request.itemIds).map { it.toItem() }
@@ -94,15 +91,8 @@ class ComicBookRepositoryImpl @Inject constructor(
 
                 itemRequestDao.saveItemRequest(
                     ItemRequest(
-                        ItemRequest.generateParamKey(
-                            itemType.typeName,
-                            null,
-                            null,
-                            startsWith,
-                            orderBy
-                        ),
-                        offset,
-                        limit,
+                        ItemRequest.generateParamKey(itemType.typeName, null, null),
+                        ItemRequest.generateParamExtras(startsWith, orderBy, offset, limit),
                         itemIds,
                         Date()
                     )
@@ -131,16 +121,13 @@ class ComicBookRepositoryImpl @Inject constructor(
         return flow {
             emit(Resource.Loading(true))
 
+            if (fetchFromRemote) {
+                itemRequestDao.clearItemRequestsForKey(ItemRequest.generateParamKey(itemType.typeName, prefix, id))
+            }
+
             itemRequestDao.retrieveItemRequest(
-                ItemRequest.generateParamKey(
-                    itemType.typeName,
-                    prefix,
-                    id,
-                    "",
-                    orderBy
-                ),
-                offset,
-                limit
+                ItemRequest.generateParamKey(itemType.typeName, prefix, id),
+                ItemRequest.generateParamExtras("", orderBy, offset, limit)
             )?.let { request ->
                 println("Retrieved from local db: ${request.itemIds}")
                 val itemList = itemDao.retrieveItems(request.itemIds).map { it.toItem() }
@@ -186,15 +173,8 @@ class ComicBookRepositoryImpl @Inject constructor(
 
                 itemRequestDao.saveItemRequest(
                     ItemRequest(
-                        ItemRequest.generateParamKey(
-                            itemType.typeName,
-                            prefix,
-                            id,
-                            "",
-                            orderBy
-                        ),
-                        offset,
-                        limit,
+                        ItemRequest.generateParamKey(itemType.typeName, prefix, id),
+                        ItemRequest.generateParamExtras("", orderBy, offset, limit),
                         itemIds,
                         Date()
                     )
