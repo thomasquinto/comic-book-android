@@ -5,10 +5,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    entities = [ItemEntity::class],
+    entities = [ItemEntity::class, ItemRequest::class],
     version = 1
 )
 @TypeConverters(Converters::class)
 abstract class ComicBookDatabase: RoomDatabase() {
-    abstract val dao: ItemDao
+    abstract val itemDao: ItemDao
+    abstract val itemRequestDao: ItemRequestDao
 }

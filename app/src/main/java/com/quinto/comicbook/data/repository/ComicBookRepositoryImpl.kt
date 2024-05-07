@@ -1,6 +1,7 @@
 package com.quinto.comicbook.data.repository
 
 import com.quinto.comicbook.data.local.ComicBookDatabase
+import com.quinto.comicbook.data.local.ItemRequest
 import com.quinto.comicbook.data.mapper.toEntity
 import com.quinto.comicbook.data.mapper.toItem
 import com.quinto.comicbook.data.remote.ComicBookApi
@@ -8,12 +9,14 @@ import com.quinto.comicbook.data.remote.OrderBy
 import com.quinto.comicbook.data.repository.dto.MappedItem
 import com.quinto.comicbook.data.repository.dto.ResponseDto
 import com.quinto.comicbook.domain.model.Item
+import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import com.quinto.comicbook.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.Date
 import javax.inject.Inject
 
 class ComicBookRepositoryImpl @Inject constructor(
@@ -21,7 +24,8 @@ class ComicBookRepositoryImpl @Inject constructor(
     private val db: ComicBookDatabase
 ) : ComicBookRepository {
 
-    private val dao = db.dao
+    private val itemDao = db.itemDao
+    private val itemRequestDao = db.itemRequestDao
 
     private suspend fun <T:  MappedItem> getItems(
         offset: Int,
@@ -29,10 +33,33 @@ class ComicBookRepositoryImpl @Inject constructor(
         orderBy: OrderBy,
         startsWith: String,
         fetchFromRemote: Boolean,
-        getRemoteItems: suspend (String, Long, String, Int, Int, String, String?) -> ResponseDto<T>
+        getRemoteItems: suspend (String, Long, String, Int, Int, String, String?) -> ResponseDto<T>,
+        itemType: ItemType
     ): Flow<Resource<List<Item>>> {
         return flow {
             emit(Resource.Loading(true))
+
+            itemRequestDao.retrieveItemRequest(
+                ItemRequest.generateParamKey(
+                    itemType.typeName,
+                    null,
+                    null,
+                    startsWith,
+                    orderBy
+                ),
+                offset,
+                limit
+            )?.let { request ->
+                println("Retrieved from local db: ${request.itemIds}")
+                val itemList = itemDao.retrieveItems(request.itemIds).map { it.toItem() }
+                emit(
+                    Resource.Success(
+                       data = itemList.sortedBy { request.itemIds.indexOf(it.id) } // retain order of items
+                    )
+                )
+                emit(Resource.Loading(false))
+                return@flow
+            }
 
             val remoteItems = try {
                 val ts = System.currentTimeMillis()
@@ -56,10 +83,34 @@ class ComicBookRepositoryImpl @Inject constructor(
                 null
             }
 
-            remoteItems?.let { listings ->
+            remoteItems?.let { items ->
+
+                items.map {
+                    itemDao.saveItem(it.toEntity())
+                }
+
+                val itemIds = items.map { it.id }
+                println("Saving to local db: $itemIds")
+
+                itemRequestDao.saveItemRequest(
+                    ItemRequest(
+                        ItemRequest.generateParamKey(
+                            itemType.typeName,
+                            null,
+                            null,
+                            startsWith,
+                            orderBy
+                        ),
+                        offset,
+                        limit,
+                        itemIds,
+                        Date()
+                    )
+                )
+
                 emit(
                     Resource.Success(
-                        data = listings
+                        data = items
                     )
                 )
                 emit(Resource.Loading(false))
@@ -74,10 +125,33 @@ class ComicBookRepositoryImpl @Inject constructor(
         limit: Int,
         orderBy: OrderBy,
         fetchFromRemote: Boolean,
-        getRemoteDetails: suspend (String, Int, String, Long, String, Int, Int, String) -> ResponseDto<T>
+        getRemoteDetails: suspend (String, Int, String, Long, String, Int, Int, String) -> ResponseDto<T>,
+        itemType: ItemType
     ): Flow<Resource<List<Item>>> {
         return flow {
             emit(Resource.Loading(true))
+
+            itemRequestDao.retrieveItemRequest(
+                ItemRequest.generateParamKey(
+                    itemType.typeName,
+                    prefix,
+                    id,
+                    "",
+                    orderBy
+                ),
+                offset,
+                limit
+            )?.let { request ->
+                println("Retrieved from local db: ${request.itemIds}")
+                val itemList = itemDao.retrieveItems(request.itemIds).map { it.toItem() }
+                emit(
+                    Resource.Success(
+                        data = itemList.sortedBy { request.itemIds.indexOf(it.id) } // retain order of items
+                    )
+                )
+                emit(Resource.Loading(false))
+                return@flow
+            }
 
             val remoteItems = try {
                 val ts = System.currentTimeMillis()
@@ -102,10 +176,33 @@ class ComicBookRepositoryImpl @Inject constructor(
                 null
             }
 
-            remoteItems?.let { listings ->
+            remoteItems?.let { items ->
+                items.map {
+                    itemDao.saveItem(it.toEntity())
+                }
+
+                val itemIds = items.map { it.id }
+                println("Saving to local db: $itemIds")
+
+                itemRequestDao.saveItemRequest(
+                    ItemRequest(
+                        ItemRequest.generateParamKey(
+                            itemType.typeName,
+                            prefix,
+                            id,
+                            "",
+                            orderBy
+                        ),
+                        offset,
+                        limit,
+                        itemIds,
+                        Date()
+                    )
+                )
+
                 emit(
                     Resource.Success(
-                        data = listings
+                        data = items
                     )
                 )
                 emit(Resource.Loading(false))
@@ -120,7 +217,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         startsWith: String,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getCharacters)
+        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getCharacters, ItemType.CHARACTER)
     }
 
     override suspend fun getComics(
@@ -130,7 +227,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         startsWith: String,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getComics)
+        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getComics, ItemType.COMIC)
     }
 
     override suspend fun getCreators(
@@ -140,7 +237,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         startsWith: String,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getCreators)
+        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getCreators, ItemType.CREATOR)
     }
 
     override suspend fun getEvents(
@@ -150,7 +247,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         startsWith: String,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getEvents)
+        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getEvents, ItemType.EVENT)
     }
 
     override suspend fun getSeries(
@@ -160,7 +257,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         startsWith: String,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getSeries)
+        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getSeries, ItemType.SERIES)
     }
 
     override suspend fun getStories(
@@ -170,7 +267,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         startsWith: String,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getStories)
+        return getItems(offset, limit, orderBy, startsWith, fetchFromRemote, api::getStories, ItemType.STORY)
     }
 
     override suspend fun getCharacterDetails(
@@ -181,7 +278,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         orderBy: OrderBy,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getCharacterDetails)
+        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getCharacterDetails, ItemType.CHARACTER)
     }
     override suspend fun getComicDetails(
         prefix: String,
@@ -191,7 +288,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         orderBy: OrderBy,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getComicDetails)
+        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getComicDetails, ItemType.COMIC)
     }
 
     override suspend fun getCreatorDetails(
@@ -202,7 +299,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         orderBy: OrderBy,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getCreatorDetails)
+        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getCreatorDetails, ItemType.CREATOR)
     }
 
     override suspend fun getEventDetails(
@@ -213,7 +310,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         orderBy: OrderBy,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getEventDetails)
+        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getEventDetails, ItemType.EVENT)
     }
 
     override suspend fun getSeriesDetails(
@@ -224,7 +321,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         orderBy: OrderBy,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getSeriesDetails)
+        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getSeriesDetails, ItemType.SERIES)
     }
 
     override suspend fun getStoryDetails(
@@ -235,14 +332,14 @@ class ComicBookRepositoryImpl @Inject constructor(
         orderBy: OrderBy,
         fetchFromRemote: Boolean
     ): Flow<Resource<List<Item>>> {
-        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getStoryDetails)
+        return getDetails(prefix, id, offset, limit, orderBy, fetchFromRemote, api::getStoryDetails, ItemType.STORY)
     }
 
     override suspend fun saveItem(item: Item) {
-        dao.saveItem(item.toEntity())
+        itemDao.saveItem(item.toEntity())
     }
 
     override suspend fun retrieveItem(itemId: Int): Item {
-        return dao.retrieveItem(itemId).toItem()
+        return itemDao.retrieveItem(itemId).toItem()
     }
 }

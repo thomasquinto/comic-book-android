@@ -46,6 +46,9 @@ interface ItemDao {
 
     @Query("SELECT * FROM itementity WHERE id = :itemId")
    suspend fun retrieveItem(itemId: Int): ItemEntity
+
+   @Query("SELECT * FROM itementity WHERE id IN (:itemIds)")
+    suspend fun retrieveItems(itemIds: List<Int>): List<ItemEntity>
 }
 
 fun toDbOrderBy(orderBy: OrderBy): String {
