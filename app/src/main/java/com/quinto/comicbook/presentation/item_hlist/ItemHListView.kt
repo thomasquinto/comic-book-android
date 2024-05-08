@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -131,7 +133,7 @@ fun ItemLabel(
 ) {
     Column(
         modifier = Modifier
-            .width(108.dp)
+            .width(118.dp)
             .padding(4.dp)
             .clickable(enabled = itemSelected != null) {
                 if (itemSelected != null) {
@@ -148,14 +150,15 @@ fun ItemLabel(
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier
-                .width(100.dp)
-                .height(100.dp)
+                .width(110.dp)
+                .height(130.dp)
                 .clickable(enabled = itemSelected != null) {
                     println("Item selected: $item")
                     if (itemSelected != null) {
                         itemSelected(item)
                     }
                 }
+                .clip(RoundedCornerShape(6.dp))
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(

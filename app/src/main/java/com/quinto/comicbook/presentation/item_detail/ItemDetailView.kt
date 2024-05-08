@@ -72,7 +72,7 @@ fun ItemDetailView(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(400.dp)
+                            .height(600.dp)
                     )
                 }
 
