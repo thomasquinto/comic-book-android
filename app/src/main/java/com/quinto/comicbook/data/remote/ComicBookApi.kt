@@ -183,10 +183,18 @@ private fun String.md5(): String {
 enum class OrderBy(val value: String) {
     NAME("name"),
     NAME_DESC("-name"),
+    FIRST_NAME("firstName"),
+    FIRST_NAME_DESC("-firstName"),
     LAST_NAME("lastName"),
     LAST_NAME_DESC("-lastName"),
     TITLE("title"),
     TITLE_DESC("-title"),
     MODIFIED("modified"),
     MODIFIED_DESC("-modified"),
+    ON_SALE_DATE("onsaleDate"),
+    ON_SALE_DATE_DESC("-onsaleDate"),
+    START_DATE("startDate"),
+    START_DATE_DESC("-startDate"),
+    START_YEAR("startYear"),
+    START_YEAR_DESC("-startYear"),
 }

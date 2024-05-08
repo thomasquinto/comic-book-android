@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.hilt.android.v244)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.swipe.refresh)
+    implementation(libs.androidx.material.icons)
+    implementation(libs.androidx.material.icons.extended)
     kapt(libs.hilt.android.compiler)
     kapt(libs.androidx.room.compiler)
     testImplementation(libs.junit)

@@ -8,6 +8,6 @@ data class ItemVListState(
     val isLoading: Boolean = false,
     var offset: Int = 0,
     var limit: Int = 20,
-    var orderBy: OrderBy = OrderBy.LAST_NAME,
+    var orderBy: OrderBy = OrderBy. MODIFIED_DESC,
     val searchText: String = "",
 )

@@ -35,6 +35,7 @@ class ItemVListViewModel @AssistedInject constructor (
     private var searchItems: Job? = null
 
     init {
+        state.orderBy = getDefaultOrderBy(itemType)
         getItems()
     }
 
@@ -50,6 +51,10 @@ class ItemVListViewModel @AssistedInject constructor (
                     delay(500L)
                     getItems(reset = true)
                 }
+            }
+            is ItemVListEvent.SortBy -> {
+                state = state.copy(orderBy = event.orderBy)
+                getItems(reset = true, fetchFromRemote = false)
             }
             is ItemVListEvent.LoadMore -> {
                 getItems(reset = false)
@@ -67,8 +72,7 @@ class ItemVListViewModel @AssistedInject constructor (
             state.offset += state.limit
         }
         viewModelScope.launch {
-            val orderBy = getDefaultOrderBy(itemType)
-            getFetchItems(itemType, repository)("", 0, state.offset, state.limit, orderBy, state.searchText, fetchFromRemote)
+            getFetchItems(itemType, repository)("", 0, state.offset, state.limit, state.orderBy, state.searchText, fetchFromRemote)
                 .collect { result ->
                     when(result) {
                         is Resource.Success -> {

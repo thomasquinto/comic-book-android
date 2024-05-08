@@ -41,3 +41,32 @@ fun getDefaultOrderBy(itemType: String) = when (itemType) {
     "stories" -> OrderBy.MODIFIED_DESC
     else -> throw IllegalArgumentException("Unknown item type: $itemType")
 }
+
+fun getOrderByValues(itemType: String) = when (itemType) {
+    "characters" -> listOf(OrderBy.NAME, OrderBy.MODIFIED_DESC)
+    "comics" -> listOf(OrderBy.TITLE, OrderBy.ON_SALE_DATE, OrderBy.ON_SALE_DATE_DESC, OrderBy.MODIFIED_DESC)
+    "creators" -> listOf(OrderBy.LAST_NAME, OrderBy.FIRST_NAME, OrderBy.MODIFIED_DESC)
+    "events" -> listOf(OrderBy.NAME, OrderBy.START_DATE, OrderBy.START_DATE_DESC, OrderBy.MODIFIED_DESC)
+    "series" -> listOf(OrderBy.TITLE, OrderBy.START_YEAR, OrderBy.START_YEAR_DESC, OrderBy.MODIFIED_DESC)
+    "stories" -> listOf(OrderBy.MODIFIED_DESC)
+    else -> throw IllegalArgumentException("Unknown item type: $itemType")
+}
+
+fun getOrderByName(orderBy: OrderBy) = when (orderBy) {
+    OrderBy.NAME -> "Name"
+    OrderBy.NAME_DESC -> "Name: Reverse"
+    OrderBy.TITLE -> "Title"
+    OrderBy.TITLE_DESC -> "Title: Reverse"
+    OrderBy.ON_SALE_DATE -> "On Sale Date"
+    OrderBy.ON_SALE_DATE_DESC -> "On Sale Date: Most Recent"
+    OrderBy.LAST_NAME -> "Last Name"
+    OrderBy.LAST_NAME_DESC -> "Last Name: Reverse"
+    OrderBy.FIRST_NAME -> "First Name"
+    OrderBy.FIRST_NAME_DESC -> "First Name: Reverse"
+    OrderBy.START_DATE -> "Start Date"
+    OrderBy.START_DATE_DESC -> "Start Date: Most Recent"
+    OrderBy.START_YEAR -> "Start Year"
+    OrderBy.START_YEAR_DESC -> "Start Year: Most Recent"
+    OrderBy.MODIFIED -> "Modified Date"
+    OrderBy.MODIFIED_DESC -> "Modified Date: Most Recent"
+}

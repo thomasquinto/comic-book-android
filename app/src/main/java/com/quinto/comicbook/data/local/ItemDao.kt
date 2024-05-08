@@ -59,7 +59,15 @@ fun toDbOrderBy(orderBy: OrderBy): String {
         OrderBy.LAST_NAME_DESC -> "name DESC"
         OrderBy.TITLE -> "name ASC"
         OrderBy.TITLE_DESC -> "name DESC"
-        OrderBy.MODIFIED -> "modified ASC"
-        OrderBy.MODIFIED_DESC -> "modified DESC"
+        OrderBy.MODIFIED -> "date ASC"
+        OrderBy.MODIFIED_DESC -> "date DESC"
+        OrderBy.FIRST_NAME -> "name ASC"
+        OrderBy.FIRST_NAME_DESC -> "name DESC"
+        OrderBy.ON_SALE_DATE -> "date ASC"
+        OrderBy.ON_SALE_DATE_DESC -> "date DESC"
+        OrderBy.START_DATE -> "date ASC"
+        OrderBy.START_DATE_DESC -> "date DESC"
+        OrderBy.START_YEAR ->  "date ASC"
+        OrderBy.START_YEAR_DESC -> "date DESC"
     }
 }

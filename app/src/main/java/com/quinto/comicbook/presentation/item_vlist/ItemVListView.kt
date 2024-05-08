@@ -11,23 +11,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,8 +53,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.quinto.comicbook.data.remote.OrderBy
 import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.ItemType
+import com.quinto.comicbook.domain.repository.getOrderByName
+import com.quinto.comicbook.domain.repository.getOrderByValues
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,6 +91,9 @@ fun ItemVListView(
         if (reachedBottom) viewModel.onEvent(ItemVListEvent.LoadMore)
     }
 
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -104,23 +118,35 @@ fun ItemVListView(
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                if (itemType != ItemType.STORY.typeName) {
-                    OutlinedTextField(
-                        value = state.searchText,
-                        onValueChange = {
-                            viewModel.onEvent(
-                                ItemVListEvent.OnSearchQueryChange(it)
+                Row {
+                    if (itemType != ItemType.STORY.typeName) {
+                        OutlinedTextField(
+                            value = state.searchText,
+                            onValueChange = {
+                                viewModel.onEvent(
+                                    ItemVListEvent.OnSearchQueryChange(it)
+                                )
+                            },
+                            modifier = Modifier
+                                .padding(start = 16.dp, bottom = 16.dp)
+                                .weight(1.0f),
+                            placeholder = {
+                                Text(text = "Search")
+                            },
+                            maxLines = 1,
+                            singleLine = true
+                        )
+
+                        IconButton(onClick = {
+                            showBottomSheet = true
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Sort,
+                                contentDescription = "Sort",
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
-                        },
-                        modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                            .fillMaxWidth(),
-                        placeholder = {
-                            Text(text = "Search")
-                        },
-                        maxLines = 1,
-                        singleLine = true
-                    )
+                        }
+                    }
                 }
                 SwipeRefresh(
                     state = swipeRefreshState,
@@ -146,6 +172,38 @@ fun ItemVListView(
                     }
                 }
             }
+
+            if (showBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        showBottomSheet = false
+                    },
+                    sheetState = sheetState
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 16.dp, end = 16.dp, bottom = 32.dp)
+                    ) {
+                        Text(
+                            text ="Sort",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                        getOrderByValues(itemType).forEach { orderBy ->
+                            SortingOption(
+                                option = orderBy,
+                                isSelected = state.orderBy == orderBy
+                            ) {
+                                viewModel.onEvent(ItemVListEvent.SortBy(orderBy))
+                                showBottomSheet = false
+                            }
+                        }
+                    }
+                }
+            }
         }
     )
 }
@@ -160,10 +218,10 @@ fun ItemLabel(
             .fillMaxWidth()
             .padding(4.dp)
             .clickable(enabled = itemSelected != null) {
-            if (itemSelected != null) {
-                itemSelected(item)
-            }
-        },
+                if (itemSelected != null) {
+                    itemSelected(item)
+                }
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -208,5 +266,34 @@ fun LoadingItem() {
             strokeWidth = strokeWidth
         )
         Spacer(modifier = Modifier.weight(1.0f))
+    }
+}
+
+@Composable
+private fun SortingOption(
+    option: OrderBy,
+    isSelected: Boolean,
+    onOptionSelected: (OrderBy) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .selectable(
+                selected = isSelected,
+                onClick = { onOptionSelected(option) }
+            )
+    ) {
+        RadioButton(
+            selected = isSelected,
+            onClick = null,
+            colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.onBackground)
+        )
+
+        Text(
+            text = getOrderByName(option),
+            modifier = Modifier.padding(start = 16.dp)
+        )
     }
 }
