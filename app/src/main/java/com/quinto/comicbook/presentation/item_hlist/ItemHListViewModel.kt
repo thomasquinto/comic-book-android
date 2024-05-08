@@ -35,19 +35,24 @@ open class ItemHListViewModel @AssistedInject constructor(
 
     var state by mutableStateOf(ItemHListState())
 
-    init {
-        getItems()
-    }
-
     fun onEvent(event: ItemHListEvent) {
         when (event) {
+            is ItemHListEvent.LoadInitial -> {
+                getItems(true)
+            }
             is ItemHListEvent.LoadMore -> {
-                getItems()
+                getItems(false)
             }
         }
     }
 
-    private fun getItems() {
+    private fun getItems(reset: Boolean = true) {
+        if (reset) {
+            state.offset = 0
+        } else {
+            state.offset += state.limit
+        }
+
         viewModelScope.launch {
 
             val responseFlow: Flow<Resource<List<Item>>> = if (detailItem != null) {

@@ -322,4 +322,9 @@ class ComicBookRepositoryImpl @Inject constructor(
     override suspend fun retrieveItem(itemId: Int): Item {
         return itemDao.retrieveItem(itemId).toItem()
     }
+
+    override suspend fun deleteCache() {
+        itemDao.clearItems()
+        itemRequestDao.clearItemRequests()
+    }
 }

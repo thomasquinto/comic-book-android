@@ -112,4 +112,6 @@ interface ComicBookRepository {
     suspend fun saveItem(item: Item)
 
     suspend fun retrieveItem(itemId: Int): Item
+
+    suspend fun deleteCache()
 }

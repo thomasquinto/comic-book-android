@@ -51,6 +51,10 @@ fun ItemHListView(
 
     val listState = rememberLazyListState()
 
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(ItemHListEvent.LoadInitial)
+    }
+
     // observe list scrolling
     val reachedBottom: Boolean by remember {
         derivedStateOf {

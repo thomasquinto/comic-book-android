@@ -60,7 +60,7 @@ fun ItemVListView(
         }
 
     val swipeRefreshState = rememberSwipeRefreshState(
-        isRefreshing = viewModel.state.isRefreshing
+        isRefreshing = false
     )
     val state = viewModel.state
 
