@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.quinto.comicbook.data.remote.OrderBy
 import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import com.quinto.comicbook.domain.repository.getDefaultOrderBy
-import com.quinto.comicbook.domain.repository.getFetchDetails
 import com.quinto.comicbook.domain.repository.getFetchItems
 import com.quinto.comicbook.util.Resource
 import dagger.assisted.Assisted
@@ -55,24 +55,15 @@ open class ItemHListViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
 
-            val responseFlow: Flow<Resource<List<Item>>> = if (detailItem != null) {
-                getFetchDetails(itemType, repository)(
-                    detailItem.itemType.typeName,
-                    detailItem.id,
+            val responseFlow: Flow<Resource<List<Item>>> = getFetchItems(itemType, repository)(
+                    detailItem?.itemType?.typeName ?: "",
+                    detailItem?.id ?: 0,
                     state.offset,
                     state.limit,
-                    getDefaultOrderBy(itemType),
-                    false
-                )
-            } else {
-                getFetchItems(itemType, repository)(
-                    state.offset,
-                    state.limit,
-                    state.orderBy,
+                    if (detailItem != null) getDefaultOrderBy(itemType) else OrderBy.MODIFIED_DESC,
                     "",
                     false
                 )
-            }
 
             responseFlow .collect { result ->
                 when (result) {

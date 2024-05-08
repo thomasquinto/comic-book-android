@@ -103,7 +103,8 @@ interface ComicBookApi {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
-        ): ResponseDto<CharacterDto>
+        @Query("nameStartsWith") nameStartsWith: String? = null
+    ): ResponseDto<CharacterDto>
 
     @GET("{prefix}/{id}/comics")
     suspend fun getComicDetails(
@@ -115,6 +116,7 @@ interface ComicBookApi {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
+        @Query("titleStartsWith") titleStartsWith: String? = null
     ): ResponseDto<ComicDto>
 
     @GET("{prefix}/{id}/creators")
@@ -127,6 +129,7 @@ interface ComicBookApi {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
+        @Query("nameStartsWith") nameStartsWith: String? = null
     ): ResponseDto<CreatorDto>
 
     @GET("{prefix}/{id}/events")
@@ -139,6 +142,7 @@ interface ComicBookApi {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
+        @Query("nameStartsWith") nameStartsWith: String? = null
     ): ResponseDto<EventDto>
 
     @GET("{prefix}/{id}/series")
@@ -151,6 +155,7 @@ interface ComicBookApi {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
+        @Query("titleStartsWith") titleStartsWith: String? = null
     ): ResponseDto<SeriesDto>
 
     @GET("{prefix}/{id}/stories")
@@ -163,6 +168,7 @@ interface ComicBookApi {
         @Query("offset") offset: Int,
         @Query("limit") limit: Int,
         @Query("orderBy") orderBy: String,
+        @Query("titleStartsWith") titleStartsWith: String? = null
     ): ResponseDto<StoryDto>
 }
 

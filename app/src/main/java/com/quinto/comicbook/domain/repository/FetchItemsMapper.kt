@@ -13,16 +13,6 @@ fun getFetchItems(itemType: String, repository: ComicBookRepository) = when (ite
     else -> throw IllegalArgumentException("Unknown item type: $itemType")
 }
 
-fun getFetchDetails(itemType: String,  repository: ComicBookRepository) = when (itemType) {
-    ItemType.CHARACTER.typeName -> repository::getCharacterDetails
-    ItemType.COMIC.typeName -> repository::getComicDetails
-    ItemType.CREATOR.typeName -> repository::getCreatorDetails
-    ItemType.EVENT.typeName -> repository::getEventDetails
-    ItemType.SERIES.typeName -> repository::getSeriesDetails
-    ItemType.STORY.typeName -> repository::getStoryDetails
-    else -> throw IllegalArgumentException("Unknown item type: $itemType")
-}
-
 fun getItemTypesForDetail(itemType: String) = when (itemType) {
     ItemType.CHARACTER.typeName -> listOf(ItemType.COMIC, ItemType.SERIES, ItemType.EVENT, ItemType.STORY)
     ItemType.COMIC.typeName -> listOf(ItemType.CHARACTER, ItemType.CREATOR, ItemType.EVENT, ItemType.STORY)

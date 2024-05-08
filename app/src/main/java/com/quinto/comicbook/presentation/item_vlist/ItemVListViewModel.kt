@@ -68,7 +68,7 @@ class ItemVListViewModel @AssistedInject constructor (
         }
         viewModelScope.launch {
             val orderBy = getDefaultOrderBy(itemType)
-            getFetchItems(itemType, repository)(state.offset, state.limit, orderBy, state.searchText, fetchFromRemote)
+            getFetchItems(itemType, repository)("", 0, state.offset, state.limit, orderBy, state.searchText, fetchFromRemote)
                 .collect { result ->
                     when(result) {
                         is Resource.Success -> {
