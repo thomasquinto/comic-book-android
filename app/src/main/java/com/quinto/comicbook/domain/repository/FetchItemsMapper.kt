@@ -24,6 +24,7 @@ fun getItemTypesForDetail(itemType: String) = when (itemType) {
 }
 
 fun getItemTypesForHome() = listOf(
+    ItemType.FAVORITE,
     ItemType.COMIC,
     ItemType.CHARACTER,
     ItemType.SERIES,

@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
@@ -69,57 +68,58 @@ fun ItemHListView(
         if (reachedBottom) viewModel.onEvent(ItemHListEvent.LoadMore)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = 8.dp,
-                vertical = 2.dp
-            )
-            .alpha(if (state.items.isEmpty()) 0.0f else 1.0f)
-    ) {
-
-        Row(
+    if (state.items.isNotEmpty()) {
+        Column(
             modifier = Modifier
-                .clickable(enabled = itemTypeSelected != null) {
-                    if (itemTypeSelected != null) {
-                        itemTypeSelected(itemType)
-                    }
-                }
+                .fillMaxWidth()
                 .padding(
-                    top = 4.dp,
-                    bottom = 4.dp
+                    horizontal = 8.dp,
+                    vertical = 2.dp
                 )
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.Bottom
         ) {
-            Text(
-                text = viewModel.itemType.replaceFirstChar(Char::uppercase),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Spacer(modifier = Modifier.weight(1.0f))
-            if (itemTypeSelected != null) {
+
+            Row(
+                modifier = Modifier
+                    .clickable(enabled = itemTypeSelected != null) {
+                        if (itemTypeSelected != null) {
+                            itemTypeSelected(itemType)
+                        }
+                    }
+                    .padding(
+                        top = 4.dp,
+                        bottom = 4.dp
+                    )
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom
+            ) {
                 Text(
-                    text = "See all",
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onBackground
+                    text = viewModel.itemType.replaceFirstChar(Char::uppercase),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
+                Spacer(modifier = Modifier.weight(1.0f))
+                if (itemTypeSelected != null) {
+                    Text(
+                        text = "See all",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
-        }
-        LazyRow(
-            state = listState
-        ) {
-            items(state.items.size) {
-                ItemLabel(
-                    item = state.items[it],
-                    itemSelected = itemSelected
-                )
-            }
-            if (viewModel.state.isLoading) {
-                item {
-                    LoadingItem()
+            LazyRow(
+                state = listState
+            ) {
+                items(state.items.size) {
+                    ItemLabel(
+                        item = state.items[it],
+                        itemSelected = itemSelected
+                    )
+                }
+                if (viewModel.state.isLoading) {
+                    item {
+                        LoadingItem()
+                    }
                 }
             }
         }

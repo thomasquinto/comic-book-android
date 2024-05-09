@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quinto.comicbook.data.remote.OrderBy
 import com.quinto.comicbook.domain.model.Item
+import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import com.quinto.comicbook.domain.repository.getDefaultOrderBy
 import com.quinto.comicbook.domain.repository.getFetchItems
@@ -47,6 +48,19 @@ open class ItemHListViewModel @AssistedInject constructor(
     }
 
     private fun getItems(reset: Boolean = true) {
+        if(itemType == ItemType.FAVORITE.typeName) {
+            if (reset) {
+                viewModelScope.launch {
+                    repository.retrieveFavoriteItems().let {
+                        state = state.copy(
+                            items = it
+                        )
+                    }
+                }
+            }
+            return
+        }
+
         if (reset) {
             state.offset = 0
         } else {

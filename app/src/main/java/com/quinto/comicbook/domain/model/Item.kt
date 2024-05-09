@@ -17,7 +17,8 @@ enum class ItemType(val typeName: String) {
     CREATOR("creators"),
     EVENT("events"),
     SERIES("series"),
-    STORY("stories");
+    STORY("stories"),
+    FAVORITE("favorites");
 
     companion object {
         fun byName(input: String): ItemType? {

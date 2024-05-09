@@ -118,7 +118,7 @@ fun ItemVListView(
                     .padding(paddingValues)
             ) {
                 Row {
-                    if (itemType != ItemType.STORY.typeName) {
+                    if (itemType != ItemType.STORY.typeName && itemType != ItemType.FAVORITE.typeName) {
                         OutlinedTextField(
                             value = state.searchText,
                             onValueChange = {
@@ -154,7 +154,8 @@ fun ItemVListView(
                     }
                 ) {
                     LazyColumn(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         state = lazyListState
                     ) {
                         items(state.items.size) {

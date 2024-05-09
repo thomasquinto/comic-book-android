@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import com.quinto.comicbook.domain.repository.getDefaultOrderBy
 import com.quinto.comicbook.domain.repository.getFetchItems
@@ -37,7 +38,9 @@ class ItemVListViewModel @AssistedInject constructor (
     private var searchItems: Job? = null
 
     init {
-        state.orderBy = getDefaultOrderBy(itemType)
+        if (itemType != ItemType.FAVORITE.typeName) {
+            state.orderBy = getDefaultOrderBy(itemType)
+        }
         getItems()
     }
 
@@ -68,6 +71,19 @@ class ItemVListViewModel @AssistedInject constructor (
         reset: Boolean = true,
         fetchFromRemote: Boolean = false
     ) {
+        if(itemType == ItemType.FAVORITE.typeName) {
+            if (reset) {
+                viewModelScope.launch {
+                    repository.retrieveFavoriteItems().let {
+                        state = state.copy(
+                            items = it
+                        )
+                    }
+                }
+            }
+            return
+        }
+
         if (reset) {
             state.offset = 0
         } else {
