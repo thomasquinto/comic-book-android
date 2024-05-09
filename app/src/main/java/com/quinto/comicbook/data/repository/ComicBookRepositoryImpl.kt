@@ -112,7 +112,9 @@ class ComicBookRepositoryImpl @Inject constructor(
             remoteItems?.let { items ->
 
                 items.map {
-                    itemDao.saveItem(it.toEntity())
+                    if (itemDao.retrieveItem(it.id) == null) {
+                        itemDao.saveItem(it.toEntity())
+                    }
                 }
 
                 val itemIds = items.map { it.id }
@@ -244,5 +246,14 @@ class ComicBookRepositoryImpl @Inject constructor(
     override suspend fun deleteCache() {
         itemDao.clearItems()
         itemRequestDao.clearItemRequests()
+    }
+
+    override suspend fun retrieveFavoriteItems(): List<Item> {
+        return itemDao.retrieveFavoriteItems().map { it.toItem() }
+    }
+
+    override suspend fun updateFavorite(itemId: Int, isFavorite: Boolean) {
+        println("Updating favorite: $itemId, $isFavorite")
+        itemDao.updateFavorite(itemId, isFavorite)
     }
 }

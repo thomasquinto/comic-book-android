@@ -1,7 +1,7 @@
 package com.quinto.comicbook.domain.repository
 
-import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.data.remote.OrderBy
+import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.util.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -72,4 +72,8 @@ interface ComicBookRepository {
     suspend fun retrieveItem(itemId: Int): Item
 
     suspend fun deleteCache()
+
+    suspend fun retrieveFavoriteItems(): List<Item>
+
+    suspend fun updateFavorite(itemId: Int, isFavorite: Boolean)
 }

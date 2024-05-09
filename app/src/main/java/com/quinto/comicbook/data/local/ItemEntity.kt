@@ -11,5 +11,6 @@ data class ItemEntity(
     val description: String? = null,
     val date: Date? = null,
     val thumbnailUrl: String? = null,
-    val itemType: String? = null
+    val itemType: String? = null,
+    val isFavorite: Boolean? = null,
 )

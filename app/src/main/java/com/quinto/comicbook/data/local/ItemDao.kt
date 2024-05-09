@@ -9,12 +9,12 @@ import com.quinto.comicbook.data.remote.OrderBy
 @Dao
 interface ItemDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.NONE)
     suspend fun insertItems(
         itemEntities: List<ItemEntity>
     )
 
-    @Query("DELETE FROM itementity")
+    @Query("DELETE FROM itementity WHERE isFavorite != 1")
     suspend fun clearItems()
 
     // Changed from this to be a "starts with" search
@@ -49,6 +49,12 @@ interface ItemDao {
 
    @Query("SELECT * FROM itementity WHERE id IN (:itemIds)")
     suspend fun retrieveItems(itemIds: List<Int>): List<ItemEntity>
+
+    @Query("SELECT * FROM itementity WHERE isFavorite = 1")
+    suspend fun retrieveFavoriteItems(): List<ItemEntity>
+
+    @Query("UPDATE itementity SET isFavorite = :isFavorite WHERE id = :itemId")
+    suspend fun updateFavorite(itemId: Int, isFavorite: Boolean)
 }
 
 fun toDbOrderBy(orderBy: OrderBy): String {

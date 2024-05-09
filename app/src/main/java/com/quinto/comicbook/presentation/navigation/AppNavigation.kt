@@ -2,7 +2,6 @@ package com.quinto.comicbook.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -19,8 +18,6 @@ import com.quinto.comicbook.presentation.navigation.AppDestinations.HOME
 import com.quinto.comicbook.presentation.navigation.AppDestinations.LIST
 import com.quinto.comicbook.presentation.navigation.AppKeys.ITEM_ID_KEY
 import com.quinto.comicbook.presentation.navigation.AppKeys.ITEM_TYPE_KEY
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 private object AppDestinations {
@@ -39,9 +36,8 @@ fun AppNavigation (
     startDestination: String = HOME,
     repository: ComicBookRepository
 ) {
-    val scope = rememberCoroutineScope()
     val navController = rememberNavController()
-    val actions = remember(navController) { AppActions(scope, navController, repository) }
+    val actions = remember(navController) { AppActions(navController) }
 
     NavHost(
         navController = navController,
@@ -84,24 +80,18 @@ fun AppNavigation (
             }
             ItemDetailView(item, actions.itemSelected, actions.backClicked)
         }
-
     }
 }
 
 
 private class AppActions(
-    private val scope: CoroutineScope,
     navController: NavHostController,
-    repository: ComicBookRepository
 ) {
     val itemTypeSelected: (String) -> Unit = { itemType: String ->
         navController.navigate("$LIST/$itemType")
     }
     val itemSelected: (Item) -> Unit = { item: Item ->
-        scope.launch {
-            repository.saveItem(item)
-            navController.navigate("$DETAIL/${item.id}")
-        }
+        navController.navigate("$DETAIL/${item.id}")
     }
     val backClicked: () -> Unit = {
         navController.popBackStack()
