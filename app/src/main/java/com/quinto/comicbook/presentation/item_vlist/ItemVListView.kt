@@ -183,7 +183,7 @@ fun ItemVListView(
                     Column(
                         modifier = Modifier
                             .align(Alignment.Start)
-                            .padding(start = 16.dp, end = 16.dp, bottom = 32.dp)
+                            .padding(start = 16.dp, end = 16.dp, bottom = 48.dp)
                     ) {
                         Text(
                             text ="Sort",
@@ -233,7 +233,7 @@ fun ItemLabel(
             contentDescription = null,
             modifier = Modifier
                 .width(110.dp)
-                .height(130.dp)
+                .height(165.dp)
                 .clip(RoundedCornerShape(6.dp))
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -279,7 +279,7 @@ private fun SortingOption(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(vertical = 16.dp)
             .selectable(
                 selected = isSelected,
                 onClick = { onOptionSelected(option) }

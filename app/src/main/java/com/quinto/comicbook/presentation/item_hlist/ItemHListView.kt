@@ -102,7 +102,7 @@ fun ItemHListView(
             Spacer(modifier = Modifier.weight(1.0f))
             if (itemTypeSelected != null) {
                 Text(
-                    text = "See more",
+                    text = "See all",
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -151,7 +151,7 @@ fun ItemLabel(
             contentDescription = null,
             modifier = Modifier
                 .width(110.dp)
-                .height(130.dp)
+                .height(165.dp)
                 .clickable(enabled = itemSelected != null) {
                     println("Item selected: $item")
                     if (itemSelected != null) {
