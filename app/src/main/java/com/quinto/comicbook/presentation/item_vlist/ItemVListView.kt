@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -77,13 +76,13 @@ fun ItemVListView(
     )
     val state = viewModel.state
 
-    val listState = rememberLazyListState()
+    val lazyListState = viewModel.lazyListState
 
     // observe list scrolling
     val reachedBottom: Boolean by remember {
         derivedStateOf {
-            val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
-            lastVisibleItem?.index != 0 && lastVisibleItem?.index == listState.layoutInfo.totalItemsCount - 5
+            val lastVisibleItem = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()
+            lastVisibleItem?.index != 0 && lastVisibleItem?.index == lazyListState.layoutInfo.totalItemsCount - 5
         }
     }
     // load more if scrolled to bottom
@@ -156,7 +155,7 @@ fun ItemVListView(
                 ) {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
-                        state = listState
+                        state = lazyListState
                     ) {
                         items(state.items.size) {
                             ItemLabel(
