@@ -40,12 +40,15 @@ class ItemVListViewModel @AssistedInject constructor (
     init {
         if (itemType != ItemType.FAVORITE.typeName) {
             state.orderBy = getDefaultOrderBy(itemType)
+            getItems(true)
         }
-        getItems()
     }
 
     fun onEvent(event: ItemVListEvent) {
         when(event) {
+            is ItemVListEvent.LoadInitial -> {
+                getItems(true)
+            }
             is ItemVListEvent.Refresh -> {
                 getItems(reset = true, fetchFromRemote = true)
             }

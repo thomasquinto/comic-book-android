@@ -76,6 +76,12 @@ fun ItemVListView(
     )
     val state = viewModel.state
 
+    if (itemType == ItemType.FAVORITE.typeName) {
+        LaunchedEffect(Unit) {
+            viewModel.onEvent(ItemVListEvent.LoadInitial)
+        }
+    }
+
     val lazyListState = viewModel.lazyListState
 
     // observe list scrolling
