@@ -36,6 +36,12 @@ open class ItemHListViewModel @AssistedInject constructor(
 
     var state by mutableStateOf(ItemHListState())
 
+    init {
+        if (itemType != ItemType.FAVORITE.typeName) {
+            getItems(true)
+        }
+    }
+
     fun onEvent(event: ItemHListEvent) {
         when (event) {
             is ItemHListEvent.LoadInitial -> {

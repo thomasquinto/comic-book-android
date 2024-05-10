@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.quinto.comicbook.domain.model.Item
+import com.quinto.comicbook.domain.model.ItemType
 
 @Composable
 fun ItemHListView(
@@ -52,8 +53,10 @@ fun ItemHListView(
 
     val listState = rememberLazyListState()
 
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(ItemHListEvent.LoadInitial)
+    if (itemType == ItemType.FAVORITE.typeName) {
+        LaunchedEffect(Unit) {
+            viewModel.onEvent(ItemHListEvent.LoadInitial)
+        }
     }
 
     // observe list scrolling
