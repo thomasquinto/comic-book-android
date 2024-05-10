@@ -16,6 +16,7 @@ import com.quinto.comicbook.presentation.item_vlist.ItemVListView
 import com.quinto.comicbook.presentation.navigation.AppDestinations.DETAIL
 import com.quinto.comicbook.presentation.navigation.AppDestinations.HOME
 import com.quinto.comicbook.presentation.navigation.AppDestinations.LIST
+import com.quinto.comicbook.presentation.navigation.AppKeys.DETAIL_ITEM_TYPE_KEY
 import com.quinto.comicbook.presentation.navigation.AppKeys.ITEM_ID_KEY
 import com.quinto.comicbook.presentation.navigation.AppKeys.ITEM_TYPE_KEY
 import kotlinx.coroutines.runBlocking
@@ -29,6 +30,7 @@ private object AppDestinations {
 private object AppKeys {
     const val ITEM_TYPE_KEY = "itemType"
     const val ITEM_ID_KEY = "itemId"
+    const val DETAIL_ITEM_TYPE_KEY = "detailItemType"
 }
 
 @Composable
@@ -53,24 +55,28 @@ fun AppNavigation (
         }
 
         composable(
-            "$LIST/{$ITEM_TYPE_KEY}/{$ITEM_ID_KEY}",
+            "$LIST/{$ITEM_TYPE_KEY}/{$ITEM_ID_KEY}/{$DETAIL_ITEM_TYPE_KEY}",
             arguments = listOf(
                 navArgument(ITEM_TYPE_KEY) {
                     type = NavType.StringType
                 },
                 navArgument(ITEM_ID_KEY) {
                     type = NavType.IntType
+                },
+                navArgument(DETAIL_ITEM_TYPE_KEY) {
+                    type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
             val arguments = requireNotNull(backStackEntry.arguments)
             val itemType = arguments.getString(ITEM_TYPE_KEY)
             val itemId = arguments.getInt(ITEM_ID_KEY)
+            val detailItemType = arguments.getString(DETAIL_ITEM_TYPE_KEY)
 
             var item: Item? = null
             if (itemId != 0) {
                 item = runBlocking {
-                    repository.retrieveItem(itemId)
+                    repository.retrieveItem(itemId, detailItemType!!)
                 }
             }
 
@@ -78,17 +84,21 @@ fun AppNavigation (
         }
 
         composable(
-            "$DETAIL/{$ITEM_ID_KEY}",
+            "$DETAIL/{$ITEM_ID_KEY}/{$ITEM_TYPE_KEY}",
             arguments = listOf(
                 navArgument(ITEM_ID_KEY) {
                     type = NavType.IntType
+                },
+                navArgument(ITEM_TYPE_KEY) {
+                    type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
             val arguments = requireNotNull(backStackEntry.arguments)
             val itemId = arguments.getInt(ITEM_ID_KEY)
+            val itemType = arguments.getString(ITEM_TYPE_KEY)
             val item = runBlocking {
-                repository.retrieveItem(itemId)
+                repository.retrieveItem(itemId, itemType!!)
             }
             ItemDetailView(item, actions.itemSelected, actions.itemTypeSelected, actions.backClicked)
         }
@@ -99,11 +109,13 @@ fun AppNavigation (
 private class AppActions(
     navController: NavHostController,
 ) {
-    val itemTypeSelected: (String, Int) -> Unit = { itemType: String, itemId: Int ->
-        navController.navigate("$LIST/$itemType/$itemId")
+    val itemTypeSelected: (String, Item?) -> Unit = { itemType: String, item: Item? ->
+        val itemId = item?.id ?: 0
+        val detailItemType = item?.itemType?.typeName ?: "EMPTY"
+        navController.navigate("$LIST/$itemType/$itemId/$detailItemType")
     }
     val itemSelected: (Item) -> Unit = { item: Item ->
-        navController.navigate("$DETAIL/${item.id}")
+        navController.navigate("$DETAIL/${item.id}/${item.itemType.typeName}")
     }
     val backClicked: () -> Unit = {
         navController.popBackStack()

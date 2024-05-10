@@ -51,7 +51,7 @@ class ComicBookRepositoryImpl @Inject constructor(
                 ItemRequest.generateParamExtras(startsWith, orderBy, offset, limit)
             )?.let { request ->
                 println("Retrieved from local db: ${request.itemIds}")
-                val itemList = itemDao.retrieveItems(request.itemIds).map { it.toItem() }
+                val itemList = itemDao.retrieveItems(request.itemIds, itemType.typeName).map { it.toItem() }
                 emit(
                     Resource.Success(
                         data = itemList.sortedBy { request.itemIds.indexOf(it.id) } // retain order of items
@@ -112,7 +112,7 @@ class ComicBookRepositoryImpl @Inject constructor(
             remoteItems?.let { items ->
 
                 items.map {
-                    if (itemDao.retrieveItem(it.id) == null) {
+                    if (itemDao.retrieveItem(it.id, it.itemType.typeName) == null) {
                         itemDao.saveItem(it.toEntity())
                     }
                 }
@@ -239,8 +239,8 @@ class ComicBookRepositoryImpl @Inject constructor(
         itemDao.saveItem(item.toEntity())
     }
 
-    override suspend fun retrieveItem(itemId: Int): Item {
-        return itemDao.retrieveItem(itemId).toItem()
+    override suspend fun retrieveItem(itemId: Int, itemType: String): Item {
+        return itemDao.retrieveItem(itemId, itemType).toItem()
     }
 
     override suspend fun deleteCache() {
@@ -252,8 +252,7 @@ class ComicBookRepositoryImpl @Inject constructor(
         return itemDao.retrieveFavoriteItems().map { it.toItem() }
     }
 
-    override suspend fun updateFavorite(itemId: Int, isFavorite: Boolean) {
-        println("Updating favorite: $itemId, $isFavorite")
-        itemDao.updateFavorite(itemId, isFavorite)
+    override suspend fun updateFavorite(itemId: Int, itemType: String, isFavorite: Boolean) {
+        itemDao.updateFavorite(itemId, itemType, isFavorite)
     }
 }

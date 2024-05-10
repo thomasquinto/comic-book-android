@@ -4,11 +4,11 @@ import java.util.Date
 
 data class Item(
     val id: Int,
+    val itemType: ItemType,
     val name: String,
     val description: String,
     val date: Date,
     val thumbnailUrl: String,
-    val itemType: ItemType
 )
 
 enum class ItemType(val typeName: String) {

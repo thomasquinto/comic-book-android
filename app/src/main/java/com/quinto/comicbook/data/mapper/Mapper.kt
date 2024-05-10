@@ -7,22 +7,22 @@ import java.util.Date
 
 fun ItemEntity.toItem(): Item {
     return Item(
-        id = id ?: 0,
+        id = id,
+        itemType = ItemType.byName(itemType) ?: ItemType.CREATOR,
         name = name ?: "",
         description = description ?: "",
         thumbnailUrl = thumbnailUrl ?: "",
         date = date ?: Date(),
-        itemType = ItemType.byName(itemType ?: "") ?: ItemType.CREATOR
     )
 }
 
 fun Item.toEntity(): ItemEntity {
     return ItemEntity(
         id = id,
+        itemType = itemType.typeName,
         name = name,
         description = description,
         thumbnailUrl = thumbnailUrl,
         date = date,
-        itemType = itemType.typeName
     )
 }

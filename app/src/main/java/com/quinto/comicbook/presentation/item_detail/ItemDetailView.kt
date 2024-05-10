@@ -44,7 +44,7 @@ import java.util.Date
 fun ItemDetailView(
     item: Item,
     itemSelected: ((Item) -> Unit)? = null,
-    itemTypeSelected: ((String, Int) -> Unit)? = null,
+    itemTypeSelected: ((String, Item?) -> Unit)? = null,
     backClicked: (() -> Unit)? = null
     ) {
 
@@ -91,9 +91,7 @@ fun ItemDetailView(
                         ) {
                             IconButton(onClick = {
                                 viewModel.onEvent(
-                                    ItemDetailViewEvent.Favorite(
-                                        item.id
-                                    )
+                                    ItemDetailViewEvent.Favorite(item)
                                 )
                             }) {
                                 Icon(

@@ -44,7 +44,7 @@ class ItemDetailViewModel @AssistedInject constructor(
                     isFavorite = !state.isFavorite
                 )
                 viewModelScope.launch {
-                    repository.updateFavorite(event.itemId, state.isFavorite)
+                    repository.updateFavorite(event.item.id, event.item.itemType.typeName, state.isFavorite)
                 }
             }
         }

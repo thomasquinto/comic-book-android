@@ -1,17 +1,16 @@
 package com.quinto.comicbook.data.local
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity
+@Entity(primaryKeys = ["id", "itemType"])
 data class ItemEntity(
-    @PrimaryKey val id: Int? = null,
+    val id: Int,
+    val itemType: String,
     val name: String? = null,
     val description: String? = null,
     val date: Date? = null,
     val thumbnailUrl: String? = null,
-    val itemType: String? = null,
     val isFavorite: Boolean? = null,
     val updated: Date = Date()
 )

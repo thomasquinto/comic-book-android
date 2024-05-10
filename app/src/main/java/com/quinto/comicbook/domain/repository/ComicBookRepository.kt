@@ -69,11 +69,11 @@ interface ComicBookRepository {
 
     suspend fun saveItem(item: Item)
 
-    suspend fun retrieveItem(itemId: Int): Item
+    suspend fun retrieveItem(itemId: Int, itemType: String): Item
 
     suspend fun deleteCache()
 
     suspend fun retrieveFavoriteItems(): List<Item>
 
-    suspend fun updateFavorite(itemId: Int, isFavorite: Boolean)
+    suspend fun updateFavorite(itemId: Int, itemType: String,  isFavorite: Boolean)
 }

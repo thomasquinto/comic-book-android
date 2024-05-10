@@ -41,21 +41,19 @@ interface ItemDao {
     suspend fun searchItemsBy(query: String, orderBy: String): List<ItemEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveItem(
-        itemEntity: ItemEntity
-    )
+    suspend fun saveItem(itemEntity: ItemEntity)
 
-    @Query("SELECT * FROM itementity WHERE id = :itemId")
-   suspend fun retrieveItem(itemId: Int): ItemEntity
+    @Query("SELECT * FROM itementity WHERE id = :itemId AND itemType = :itemType")
+   suspend fun retrieveItem(itemId: Int, itemType: String): ItemEntity
 
-   @Query("SELECT * FROM itementity WHERE id IN (:itemIds)")
-    suspend fun retrieveItems(itemIds: List<Int>): List<ItemEntity>
+   @Query("SELECT * FROM itementity WHERE id IN (:itemIds) AND itemType = :itemType")
+    suspend fun retrieveItems(itemIds: List<Int>, itemType: String): List<ItemEntity>
 
     @Query("SELECT * FROM itementity WHERE isFavorite = 1 ORDER BY updated DESC")
     suspend fun retrieveFavoriteItems(): List<ItemEntity>
 
-    @Query("UPDATE itementity SET isFavorite = :isFavorite, updated = :updated WHERE id = :itemId")
-    suspend fun updateFavorite(itemId: Int, isFavorite: Boolean, updated: Date = Date())
+    @Query("UPDATE itementity SET isFavorite = :isFavorite, updated = :updated WHERE id = :itemId AND itemType = :itemType")
+    suspend fun updateFavorite(itemId: Int, itemType: String, isFavorite: Boolean, updated: Date = Date())
 }
 
 fun toDbOrderBy(orderBy: OrderBy): String {
