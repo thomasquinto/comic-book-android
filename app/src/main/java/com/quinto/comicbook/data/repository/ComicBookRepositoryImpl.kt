@@ -1,7 +1,7 @@
 package com.quinto.comicbook.data.repository
 
 import com.quinto.comicbook.data.local.ComicBookDatabase
-import com.quinto.comicbook.data.local.ItemRequest
+import com.quinto.comicbook.data.local.ItemRequestEntity
 import com.quinto.comicbook.data.mapper.toEntity
 import com.quinto.comicbook.data.mapper.toItem
 import com.quinto.comicbook.data.remote.ComicBookApi
@@ -43,12 +43,12 @@ class ComicBookRepositoryImpl @Inject constructor(
             emit(Resource.Loading(true))
 
             if (fetchFromRemote) {
-                itemRequestDao.clearItemRequestsForKey(ItemRequest.generateParamKey(itemType.typeName, prefix, id))
+                itemRequestDao.clearItemRequestsForKey(ItemRequestEntity.generateParamKey(itemType.typeName, prefix, id))
             }
 
             itemRequestDao.retrieveItemRequest(
-                ItemRequest.generateParamKey(itemType.typeName, prefix, id),
-                ItemRequest.generateParamExtras(startsWith, orderBy, offset, limit)
+                ItemRequestEntity.generateParamKey(itemType.typeName, prefix, id),
+                ItemRequestEntity.generateParamExtras(startsWith, orderBy, offset, limit)
             )?.let { request ->
                 println("Retrieved from local db: ${request.itemIds}")
                 val itemList = itemDao.retrieveItems(request.itemIds, itemType.typeName).map { it.toItem() }
@@ -121,9 +121,9 @@ class ComicBookRepositoryImpl @Inject constructor(
                 println("Saving to local db: $itemIds")
 
                 itemRequestDao.saveItemRequest(
-                    ItemRequest(
-                        ItemRequest.generateParamKey(itemType.typeName, prefix, id),
-                        ItemRequest.generateParamExtras(startsWith, orderBy, offset, limit),
+                    ItemRequestEntity(
+                        ItemRequestEntity.generateParamKey(itemType.typeName, prefix, id),
+                        ItemRequestEntity.generateParamExtras(startsWith, orderBy, offset, limit),
                         itemIds,
                         Date()
                     )

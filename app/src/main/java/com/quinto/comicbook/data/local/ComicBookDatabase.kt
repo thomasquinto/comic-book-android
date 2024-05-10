@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    entities = [ItemEntity::class, ItemRequest::class],
+    entities = [ItemEntity::class, ItemRequestEntity::class],
     version = 1
 )
 @TypeConverters(Converters::class)

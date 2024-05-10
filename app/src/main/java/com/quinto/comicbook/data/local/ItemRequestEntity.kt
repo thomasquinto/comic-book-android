@@ -5,7 +5,7 @@ import com.quinto.comicbook.data.remote.OrderBy
 import java.util.Date
 
 @Entity(primaryKeys = ["paramKey", "paramExtras"])
-data class ItemRequest(
+data class ItemRequestEntity(
     val paramKey: String,
     val paramExtras: String,
     val itemIds: List<Int>,

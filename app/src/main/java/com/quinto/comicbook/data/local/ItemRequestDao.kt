@@ -9,15 +9,15 @@ import androidx.room.Query
 interface ItemRequestDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveItemRequest(
-        itemRequest: ItemRequest
+        itemRequestEntity: ItemRequestEntity
     )
 
-    @Query("SELECT * FROM itemrequest WHERE paramKey = :paramKey AND paramExtras = :paramExtras")
-    suspend fun retrieveItemRequest(paramKey: String, paramExtras: String): ItemRequest?
+    @Query("SELECT * FROM itemRequestEntity WHERE paramKey = :paramKey AND paramExtras = :paramExtras")
+    suspend fun retrieveItemRequest(paramKey: String, paramExtras: String): ItemRequestEntity?
 
-    @Query("DELETE FROM itemrequest WHERE paramKey = :paramKey")
+    @Query("DELETE FROM itemRequestEntity WHERE paramKey = :paramKey")
     suspend fun clearItemRequestsForKey(paramKey: String)
 
-    @Query("DELETE FROM itemrequest")
+    @Query("DELETE FROM itemRequestEntity")
     suspend fun clearItemRequests()
 }

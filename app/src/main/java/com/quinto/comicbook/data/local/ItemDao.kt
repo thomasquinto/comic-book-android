@@ -15,7 +15,7 @@ interface ItemDao {
         itemEntities: List<ItemEntity>
     )
 
-    @Query("DELETE FROM itementity WHERE isFavorite != 1")
+    @Query("DELETE FROM itemEntity WHERE isFavorite != 1")
     suspend fun clearItems()
 
     // Changed from this to be a "starts with" search
@@ -23,7 +23,7 @@ interface ItemDao {
     @Query(
         """
             SELECT * 
-            FROM itementity
+            FROM itemEntity
             WHERE LOWER(name) LIKE LOWER(:query) || '%'
             ORDER BY (:orderBy)
         """
@@ -33,7 +33,7 @@ interface ItemDao {
     @Query(
         """
             SELECT * 
-            FROM itementity
+            FROM itemEntity
             WHERE LOWER(name) LIKE LOWER(:query) || '%'
             ORDER BY (:orderBy)
         """
@@ -43,16 +43,16 @@ interface ItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveItem(itemEntity: ItemEntity)
 
-    @Query("SELECT * FROM itementity WHERE id = :itemId AND itemType = :itemType")
+    @Query("SELECT * FROM itemEntity WHERE id = :itemId AND itemType = :itemType")
    suspend fun retrieveItem(itemId: Int, itemType: String): ItemEntity
 
-   @Query("SELECT * FROM itementity WHERE id IN (:itemIds) AND itemType = :itemType")
+   @Query("SELECT * FROM itemEntity WHERE id IN (:itemIds) AND itemType = :itemType")
     suspend fun retrieveItems(itemIds: List<Int>, itemType: String): List<ItemEntity>
 
-    @Query("SELECT * FROM itementity WHERE isFavorite = 1 ORDER BY updated DESC")
+    @Query("SELECT * FROM itemEntity WHERE isFavorite = 1 ORDER BY updated DESC")
     suspend fun retrieveFavoriteItems(): List<ItemEntity>
 
-    @Query("UPDATE itementity SET isFavorite = :isFavorite, updated = :updated WHERE id = :itemId AND itemType = :itemType")
+    @Query("UPDATE itemEntity SET isFavorite = :isFavorite, updated = :updated WHERE id = :itemId AND itemType = :itemType")
     suspend fun updateFavorite(itemId: Int, itemType: String, isFavorite: Boolean, updated: Date = Date())
 }
 
