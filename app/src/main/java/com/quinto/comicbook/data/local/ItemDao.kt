@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.quinto.comicbook.data.remote.OrderBy
+import java.util.Date
 
 @Dao
 interface ItemDao {
@@ -50,11 +51,11 @@ interface ItemDao {
    @Query("SELECT * FROM itementity WHERE id IN (:itemIds)")
     suspend fun retrieveItems(itemIds: List<Int>): List<ItemEntity>
 
-    @Query("SELECT * FROM itementity WHERE isFavorite = 1")
+    @Query("SELECT * FROM itementity WHERE isFavorite = 1 ORDER BY updated ASC")
     suspend fun retrieveFavoriteItems(): List<ItemEntity>
 
-    @Query("UPDATE itementity SET isFavorite = :isFavorite WHERE id = :itemId")
-    suspend fun updateFavorite(itemId: Int, isFavorite: Boolean)
+    @Query("UPDATE itementity SET isFavorite = :isFavorite, updated = :updated WHERE id = :itemId")
+    suspend fun updateFavorite(itemId: Int, isFavorite: Boolean, updated: Date = Date())
 }
 
 fun toDbOrderBy(orderBy: OrderBy): String {
