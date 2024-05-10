@@ -16,12 +16,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -51,100 +52,133 @@ fun ItemDetailView(
             factory.create(item.id)
         }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "",//item.itemType.typeName.replaceFirstChar { it.uppercase(Locale.getDefault()) },
-                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                },
-                navigationIcon =  {
-                    IconButton(onClick = { backClicked?.invoke() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(paddingValues)
-            ) {
-                item {
-                    Box(
+    Box {
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(600.dp)
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(item.thumbnailUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(600.dp)
-                    ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(item.thumbnailUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentScale = ContentScale.Crop,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
+                    )
 
-                        Box(modifier = Modifier
+                    Box(
+                        modifier = Modifier
                             .padding(16.dp)
                             .align(Alignment.BottomEnd)
+                            .alpha(0.8f)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.background,
+                                    shape = CircleShape
+                                )
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = MaterialTheme.colorScheme.background,
-                                        shape = CircleShape
+                            IconButton(onClick = {
+                                viewModel.onEvent(
+                                    ItemDetailViewEvent.Favorite(
+                                        item.id
                                     )
-                            ) {
-                                IconButton(onClick = { viewModel.onEvent(ItemDetailViewEvent.Favorite(item.id)) }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Favorite,
-                                        contentDescription = "Favorite",
-                                        tint = if (viewModel.state.isFavorite) Color.Red else MaterialTheme.colorScheme.onBackground
-                                    )
-                                }
+                                )
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Favorite,
+                                    contentDescription = "Favorite",
+                                    tint = if (viewModel.state.isFavorite) Color.Red else MaterialTheme.colorScheme.onBackground
+                                )
                             }
                         }
                     }
                 }
+            }
 
-                item {
-                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
-                        Text(
-                            text = item.name,
-                            fontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = item.description,
-                            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-                            //fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
-                    }
+            item {
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
+                    Text(
+                        text = item.name,
+                        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = item.description,
+                        fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                        //fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
                 }
+            }
 
-                getItemTypesForDetail(item.itemType.typeName).forEach { itemType ->
-                    item {
-                        ItemHListView(
-                            itemType = itemType.typeName,
-                            itemSelected = itemSelected,
-                            detailItem = item
-                        )
-                    }
+            getItemTypesForDetail(item.itemType.typeName).forEach { itemType ->
+                item {
+                    ItemHListView(
+                        itemType = itemType.typeName,
+                        itemSelected = itemSelected,
+                        detailItem = item
+                    )
                 }
             }
         }
-    )
+
+        TopAppBar(
+            colors = TopAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor= Color.Transparent,
+                navigationIconContentColor= Color.Transparent,
+                titleContentColor= Color.Transparent,
+                actionIconContentColor= Color.Transparent,
+            ),
+            title = {
+                Text(
+                    text = "",//item.itemType.typeName.replaceFirstChar { it.uppercase(Locale.getDefault()) },
+                    fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
+            navigationIcon = {
+                Box(
+                    modifier = Modifier
+                        .alpha(0.8f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.colorScheme.background,
+                                shape = CircleShape
+                            )
+                    ) {
+                        IconButton(onClick = {
+                            backClicked?.invoke()
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    }
+                }
+            }
+        )
+
+    }
+
 
 }
 
