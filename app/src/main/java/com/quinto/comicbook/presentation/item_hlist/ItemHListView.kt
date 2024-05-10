@@ -40,7 +40,7 @@ import com.quinto.comicbook.domain.model.ItemType
 @Composable
 fun ItemHListView(
     itemType: String,
-    itemTypeSelected: ((String) -> Unit)? = null,
+    itemTypeSelected: ((String, Int) -> Unit)? = null,
     itemSelected: ((Item) -> Unit)? = null,
     detailItem: Item? = null
 ) {
@@ -85,7 +85,7 @@ fun ItemHListView(
                 modifier = Modifier
                     .clickable(enabled = itemTypeSelected != null) {
                         if (itemTypeSelected != null) {
-                            itemTypeSelected(itemType)
+                            itemTypeSelected(itemType, detailItem?.id ?: 0)
                         }
                     }
                     .padding(

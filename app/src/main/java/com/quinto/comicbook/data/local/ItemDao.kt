@@ -51,7 +51,7 @@ interface ItemDao {
    @Query("SELECT * FROM itementity WHERE id IN (:itemIds)")
     suspend fun retrieveItems(itemIds: List<Int>): List<ItemEntity>
 
-    @Query("SELECT * FROM itementity WHERE isFavorite = 1 ORDER BY updated ASC")
+    @Query("SELECT * FROM itementity WHERE isFavorite = 1 ORDER BY updated DESC")
     suspend fun retrieveFavoriteItems(): List<ItemEntity>
 
     @Query("UPDATE itementity SET isFavorite = :isFavorite, updated = :updated WHERE id = :itemId")

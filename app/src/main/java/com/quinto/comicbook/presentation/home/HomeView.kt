@@ -28,7 +28,7 @@ import kotlin.math.min
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeView(
-    itemTypeSelected: ((String) -> Unit)? = null,
+    itemTypeSelected: ((String, Int) -> Unit)? = null,
     itemSelected: ((Item) -> Unit)? = null
 ) {
     val viewModel: HomeViewModel = hiltViewModel()

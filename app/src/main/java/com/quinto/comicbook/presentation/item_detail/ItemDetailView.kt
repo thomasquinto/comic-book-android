@@ -44,6 +44,7 @@ import java.util.Date
 fun ItemDetailView(
     item: Item,
     itemSelected: ((Item) -> Unit)? = null,
+    itemTypeSelected: ((String, Int) -> Unit)? = null,
     backClicked: (() -> Unit)? = null
     ) {
 
@@ -129,6 +130,7 @@ fun ItemDetailView(
                     ItemHListView(
                         itemType = itemType.typeName,
                         itemSelected = itemSelected,
+                        itemTypeSelected = itemTypeSelected,
                         detailItem = item
                     )
                 }

@@ -53,16 +53,28 @@ fun AppNavigation (
         }
 
         composable(
-            "$LIST/{$ITEM_TYPE_KEY}",
+            "$LIST/{$ITEM_TYPE_KEY}/{$ITEM_ID_KEY}",
             arguments = listOf(
                 navArgument(ITEM_TYPE_KEY) {
                     type = NavType.StringType
+                },
+                navArgument(ITEM_ID_KEY) {
+                    type = NavType.IntType
                 }
             )
         ) { backStackEntry ->
             val arguments = requireNotNull(backStackEntry.arguments)
             val itemType = arguments.getString(ITEM_TYPE_KEY)
-            ItemVListView(itemType!!, actions.itemSelected, actions.backClicked)
+            val itemId = arguments.getInt(ITEM_ID_KEY)
+
+            var item: Item? = null
+            if (itemId != 0) {
+                item = runBlocking {
+                    repository.retrieveItem(itemId)
+                }
+            }
+
+            ItemVListView(itemType!!, actions.itemSelected, actions.backClicked, item)
         }
 
         composable(
@@ -78,7 +90,7 @@ fun AppNavigation (
             val item = runBlocking {
                 repository.retrieveItem(itemId)
             }
-            ItemDetailView(item, actions.itemSelected, actions.backClicked)
+            ItemDetailView(item, actions.itemSelected, actions.itemTypeSelected, actions.backClicked)
         }
     }
 }
@@ -87,8 +99,8 @@ fun AppNavigation (
 private class AppActions(
     navController: NavHostController,
 ) {
-    val itemTypeSelected: (String) -> Unit = { itemType: String ->
-        navController.navigate("$LIST/$itemType")
+    val itemTypeSelected: (String, Int) -> Unit = { itemType: String, itemId: Int ->
+        navController.navigate("$LIST/$itemType/$itemId")
     }
     val itemSelected: (Item) -> Unit = { item: Item ->
         navController.navigate("$DETAIL/${item.id}")

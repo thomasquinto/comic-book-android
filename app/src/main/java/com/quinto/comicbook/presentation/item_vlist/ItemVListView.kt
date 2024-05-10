@@ -64,11 +64,12 @@ import java.util.Locale
 fun ItemVListView(
     itemType: String,
     itemSelected: ((Item) -> Unit)? = null,
-    backClicked: (() -> Unit)? = null
+    backClicked: (() -> Unit)? = null,
+    detailItem: Item? = null
 ) {
     val viewModel: ItemVListViewModel =
         hiltViewModel<ItemVListViewModel, ItemVListViewModel.ItemVListViewModelFactory>(key = itemType) { factory ->
-            factory.create(itemType)
+            factory.create(itemType, detailItem)
         }
 
     val swipeRefreshState = rememberSwipeRefreshState(
@@ -99,14 +100,28 @@ fun ItemVListView(
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
+    val title = if (detailItem != null) {
+        itemType.replaceFirstChar { it.uppercase(Locale.getDefault()) } + " - " + detailItem.name
+    } else {
+        itemType.replaceFirstChar { it.uppercase(Locale.getDefault()) }
+    }
+
+    val titleFontSize = if (detailItem == null) {
+        MaterialTheme.typography.headlineLarge.fontSize
+    } else {
+        MaterialTheme.typography.headlineSmall.fontSize
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = itemType.replaceFirstChar { it.uppercase(Locale.getDefault()) },
-                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                        text = title,
+                        fontSize = titleFontSize,
                         fontWeight = FontWeight.Bold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 },
