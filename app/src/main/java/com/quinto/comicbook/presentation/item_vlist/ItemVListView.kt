@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -265,6 +266,14 @@ fun ItemLabel(
             color = MaterialTheme.colorScheme.onBackground,
             overflow = TextOverflow.Visible,
             maxLines = 3,
+            modifier = Modifier
+                .weight(1.0f)
+        )
+        Icon(
+            modifier = Modifier
+                .padding(end = 4.dp),
+            imageVector = Icons.Filled.ChevronRight,
+            contentDescription = "Chevron Icon"
         )
     }
 }
