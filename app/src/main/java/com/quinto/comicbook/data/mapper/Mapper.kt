@@ -11,7 +11,7 @@ fun ItemEntity.toItem(): Item {
         itemType = ItemType.byName(itemType) ?: ItemType.CREATOR,
         name = name ?: "",
         description = description ?: "",
-        thumbnailUrl = thumbnailUrl ?: "",
+        imageUrl = imageUrl ?: "",
         date = date ?: Date(),
     )
 }
@@ -22,7 +22,7 @@ fun Item.toEntity(): ItemEntity {
         itemType = itemType.typeName,
         name = name,
         description = description,
-        thumbnailUrl = thumbnailUrl,
+        imageUrl = imageUrl,
         date = date,
     )
 }

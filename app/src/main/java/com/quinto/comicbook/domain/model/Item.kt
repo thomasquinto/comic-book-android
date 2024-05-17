@@ -8,7 +8,7 @@ data class Item(
     val name: String,
     val description: String,
     val date: Date,
-    val thumbnailUrl: String,
+    val imageUrl: String,
 )
 
 enum class ItemType(val typeName: String) {

@@ -18,7 +18,7 @@ data class CreatorDto(
             id = id ?: 0,
             name = fullName ?: "",
             description = description ?: "",
-            thumbnailUrl = thumbnail?.thumbnailUrl ?: ComicBookApi.IMAGE_MISSING_URL,
+            imageUrl = thumbnail?.thumbnailUrl ?: ComicBookApi.IMAGE_MISSING_URL,
             date = modified ?: Date(),
             itemType = ItemType.CREATOR
         )

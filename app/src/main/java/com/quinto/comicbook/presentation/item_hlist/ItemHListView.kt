@@ -155,7 +155,7 @@ fun ItemLabel(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(item.thumbnailUrl)
+                .data(item.imageUrl)
                 .crossfade(true)
                 .build(),
             contentScale = ContentScale.Crop,

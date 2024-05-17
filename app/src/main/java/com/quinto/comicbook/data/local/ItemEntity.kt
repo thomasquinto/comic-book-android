@@ -10,7 +10,7 @@ data class ItemEntity(
     val name: String? = null,
     val description: String? = null,
     val date: Date? = null,
-    val thumbnailUrl: String? = null,
+    val imageUrl: String? = null,
     val isFavorite: Boolean? = null,
     val updated: Date = Date()
 )

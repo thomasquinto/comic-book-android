@@ -107,21 +107,15 @@ fun ItemVListView(
         itemType.replaceFirstChar { it.uppercase(Locale.getDefault()) }
     }
 
-    val titleFontSize = if (detailItem == null) {
-        MaterialTheme.typography.headlineLarge.fontSize
-    } else {
-        MaterialTheme.typography.headlineSmall.fontSize
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = title,
-                        fontSize = titleFontSize,
+                        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
                         fontWeight = FontWeight.Bold,
-                        maxLines = 2,
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -248,7 +242,7 @@ fun ItemLabel(
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(item.thumbnailUrl)
+                .data(item.imageUrl)
                 .crossfade(true)
                 .build(),
             contentScale = ContentScale.Crop,
