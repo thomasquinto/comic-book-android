@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -63,17 +64,17 @@ fun ItemDetailView(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(600.dp)
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(item.imageUrl)
                             .crossfade(true)
                             .build(),
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.FillWidth,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .heightIn(max = 600.dp)
                     )
 
                     Box(
