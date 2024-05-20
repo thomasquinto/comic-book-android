@@ -52,8 +52,6 @@ fun ItemHListView(
             factory.create(itemType, detailItem)
         }
 
-    val state = viewModel.state
-
     val listState = rememberLazyListState()
 
     if (itemType == ItemType.FAVORITE.typeName) {
@@ -74,7 +72,7 @@ fun ItemHListView(
         if (reachedBottom) viewModel.onEvent(ItemHListEvent.LoadMore)
     }
 
-    if (state.items.isNotEmpty()) {
+    if (viewModel.state.items.isNotEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -121,9 +119,9 @@ fun ItemHListView(
             LazyRow(
                 state = listState
             ) {
-                items(state.items.size) {
+                items(viewModel.state.items.size) {
                     ItemLabel(
-                        item = state.items[it],
+                        item = viewModel.state.items[it],
                         itemSelected = itemSelected
                     )
                 }

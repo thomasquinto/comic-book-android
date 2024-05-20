@@ -16,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,6 +29,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -40,6 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
@@ -76,7 +81,6 @@ fun ItemVListView(
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = false
     )
-    val state = viewModel.state
 
     if (itemType == ItemType.FAVORITE.typeName) {
         LaunchedEffect(Unit) {
@@ -101,6 +105,10 @@ fun ItemVListView(
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
+    var isSearchExpanded by remember { mutableStateOf(viewModel.state.searchText.isNotEmpty()) }
+    val focusRequester = remember { FocusRequester() }
+    var requestFocus by remember { mutableStateOf(false) }
+
     val title = if (detailItem != null) {
         itemType.replaceFirstChar { it.uppercase(Locale.getDefault()) } + " - " + detailItem.name
     } else {
@@ -109,49 +117,53 @@ fun ItemVListView(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = title,
-                        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                },
-                navigationIcon =  {
-                    IconButton(onClick = { backClicked?.invoke() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                Row {
-                    if (itemType != ItemType.STORY.typeName && itemType != ItemType.FAVORITE.typeName) {
-                        OutlinedTextField(
-                            value = state.searchText,
-                            onValueChange = {
-                                viewModel.onEvent(
-                                    ItemVListEvent.OnSearchQueryChange(it)
-                                )
-                            },
-                            modifier = Modifier
-                                .padding(start = 16.dp, bottom = 16.dp)
-                                .weight(1.0f),
-                            placeholder = {
-                                Text(text = "Search")
-                            },
-                            maxLines = 1,
-                            singleLine = true
-                        )
+            if (itemType != ItemType.STORY.typeName && itemType != ItemType.FAVORITE.typeName) {
+                TopAppBar(
+                    title = {
+                        if (isSearchExpanded) {
+                            OutlinedTextField(
+                                modifier = Modifier.focusRequester(focusRequester),
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.onBackground
+                                ),
+                                value = viewModel.state.searchText,
+                                onValueChange = {
+                                    viewModel.onEvent(
+                                        ItemVListEvent.OnSearchQueryChange(it)
+                                    )
+                                },
+                                placeholder = {
+                                    Text(text = "Search")
+                                },
+                                textStyle = MaterialTheme.typography.bodyMedium,
+                                maxLines = 1,
+                                singleLine = true
+                            )
 
+                            if (requestFocus) {
+                                LaunchedEffect(Unit) {
+                                    focusRequester.requestFocus()
+                                    requestFocus = false // Reset to avoid requesting focus again in future
+                                }
+                            }
+                        } else {
+                            Text(
+                                text = title,
+                                fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    },
+                    navigationIcon =  {
+                        IconButton(onClick = { backClicked?.invoke() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                    actions = {
                         IconButton(onClick = {
                             showBottomSheet = true
                         }) {
@@ -161,8 +173,50 @@ fun ItemVListView(
                                 tint = MaterialTheme.colorScheme.onBackground
                             )
                         }
+
+                        if (isSearchExpanded) {
+                            IconButton(onClick = {
+                                isSearchExpanded = false
+                                viewModel.onEvent(ItemVListEvent.OnSearchQueryChange(""))
+                            }) {
+                                Icon(Icons.Default.Close, contentDescription = "Close")
+                            }
+                        } else {
+                            IconButton(onClick = {
+                                isSearchExpanded = true
+                                requestFocus = true
+                            }) {
+                                Icon(Icons.Default.Search, contentDescription = "Search")
+                            }
+                        }
                     }
-                }
+                )
+            } else {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = title,
+                            fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { backClicked?.invoke() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                    }
+                )
+            }
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
                 SwipeRefresh(
                     state = swipeRefreshState,
                     onRefresh = {
@@ -174,9 +228,9 @@ fun ItemVListView(
                             .fillMaxWidth(),
                         state = lazyListState
                     ) {
-                        items(state.items.size) {
+                        items(viewModel.state.items.size) {
                             ItemLabel(
-                                item = state.items[it],
+                                item = viewModel.state.items[it],
                                 itemSelected = itemSelected
                             )
                         }
@@ -211,7 +265,7 @@ fun ItemVListView(
                         getOrderByValues(itemType).forEach { orderBy ->
                             SortingOption(
                                 option = orderBy,
-                                isSelected = state.orderBy == orderBy
+                                isSelected = viewModel.state.orderBy == orderBy
                             ) {
                                 viewModel.onEvent(ItemVListEvent.SortBy(orderBy))
                                 showBottomSheet = false
