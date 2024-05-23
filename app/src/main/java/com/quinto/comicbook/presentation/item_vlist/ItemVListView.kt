@@ -38,6 +38,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,6 +64,8 @@ import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.domain.repository.getOrderByName
 import com.quinto.comicbook.domain.repository.getOrderByValues
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,6 +112,9 @@ fun ItemVListView(
     val focusRequester = remember { FocusRequester() }
     var requestFocus by remember { mutableStateOf(false) }
 
+    val searchQuery = remember { mutableStateOf(viewModel.state.searchText) }
+    val coroutineScope = rememberCoroutineScope()
+
     val title = if (detailItem != null) {
         itemType.replaceFirstChar { it.uppercase(Locale.getDefault()) } + " - " + detailItem.name
     } else {
@@ -127,11 +133,15 @@ fun ItemVListView(
                                     focusedBorderColor = MaterialTheme.colorScheme.onBackground,
                                     unfocusedBorderColor = MaterialTheme.colorScheme.onBackground
                                 ),
-                                value = viewModel.state.searchText,
-                                onValueChange = {
-                                    viewModel.onEvent(
-                                        ItemVListEvent.OnSearchQueryChange(it)
-                                    )
+                                value = searchQuery.value,
+                                onValueChange = {newValue ->
+                                    coroutineScope.launch {
+                                        delay(500) // delay for 0.5 seconds
+                                        if (newValue == searchQuery.value) {
+                                            viewModel.onEvent(ItemVListEvent.OnSearchQueryChange(newValue))
+                                        }
+                                    }
+                                    searchQuery.value = newValue
                                 },
                                 placeholder = {
                                     Text(text = "Search")
