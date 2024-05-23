@@ -17,7 +17,8 @@ interface ComicBookApi {
     companion object {
         const val PUBLIC_KEY = "***REMOVED***"
         const val PRIVATE_KEY = "***REMOVED***"
-        const val BASE_URL = "https://gateway.marvel.com:443/v1/public/"
+        //const val BASE_URL = "https://gateway.marvel.com:443/v1/public/"
+        const val BASE_URL = "http://3.101.90.31:8080/v1/public/"
         const val IMAGE_MISSING_URL = "https://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
 
         fun generateHash(ts: String): String {
