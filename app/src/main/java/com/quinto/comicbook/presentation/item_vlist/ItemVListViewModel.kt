@@ -1,6 +1,7 @@
 package com.quinto.comicbook.presentation.item_vlist
 
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -37,6 +38,7 @@ class ItemVListViewModel @AssistedInject constructor (
 
     var state by mutableStateOf(ItemVListState())
     var lazyListState by mutableStateOf(LazyListState())
+    var lazyGridState by mutableStateOf(LazyGridState())
 
     private var searchItems: Job? = null
 
@@ -129,6 +131,7 @@ class ItemVListViewModel @AssistedInject constructor (
 
             if (reset) {
                 lazyListState.scrollToItem(0)
+                lazyGridState.scrollToItem(0)
             }
         }
     }

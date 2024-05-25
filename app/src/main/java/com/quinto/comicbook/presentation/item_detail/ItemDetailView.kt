@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,7 +76,7 @@ fun ItemDetailView(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = 600.dp)
+                            .heightIn(max = (LocalConfiguration.current.screenHeightDp / 1.3).dp)
                     )
 
                     Box(

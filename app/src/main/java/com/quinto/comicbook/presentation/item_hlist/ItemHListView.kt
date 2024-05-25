@@ -1,6 +1,7 @@
 package com.quinto.comicbook.presentation.item_hlist
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,7 +66,7 @@ fun ItemHListView(
     val reachedBottom: Boolean by remember {
         derivedStateOf {
             val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
-            lastVisibleItem?.index != 0 && lastVisibleItem?.index == listState.layoutInfo.totalItemsCount - 5
+            lastVisibleItem?.index != 0 && lastVisibleItem?.index == listState.layoutInfo.totalItemsCount - 1
         }
     }
     // load more if scrolled to bottom
@@ -90,7 +92,7 @@ fun ItemHListView(
                         }
                     }
                     .padding(
-                        top = 4.dp,
+                        top = 24.dp,
                         bottom = 4.dp
                     )
                     .fillMaxWidth(),
@@ -98,7 +100,7 @@ fun ItemHListView(
             ) {
                 Text(
                     text = viewModel.itemType.replaceFirstChar(Char::uppercase),
-                    fontSize = 18.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
@@ -106,7 +108,7 @@ fun ItemHListView(
                 if (itemTypeSelected != null) {
                     Text(
                         text = "See all",
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -142,7 +144,7 @@ fun ItemLabel(
 ) {
     Column(
         modifier = Modifier
-            .width(118.dp)
+            .width(168.dp)
             .padding(4.dp)
             .clickable(enabled = itemSelected != null) {
                 if (itemSelected != null) {
@@ -159,8 +161,8 @@ fun ItemLabel(
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier
-                .width(110.dp)
-                .height(165.dp)
+                .width(160.dp)
+                .height(240.dp)
                 .clickable(enabled = itemSelected != null) {
                     println("Item selected: $item")
                     if (itemSelected != null) {
@@ -169,14 +171,21 @@ fun ItemLabel(
                 }
                 .clip(RoundedCornerShape(6.dp))
         )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = item.name,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Box(
+            modifier = Modifier.width(168.dp)
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                text = item.name,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+            )
+        }
     }
 }
 

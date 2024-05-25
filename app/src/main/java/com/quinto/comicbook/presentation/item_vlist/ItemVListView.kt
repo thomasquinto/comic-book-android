@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -49,6 +51,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -64,6 +67,7 @@ import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.domain.repository.getOrderByName
 import com.quinto.comicbook.domain.repository.getOrderByValues
+import com.quinto.comicbook.presentation.item_hlist.ItemLabel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -91,19 +95,35 @@ fun ItemVListView(
         }
     }
 
+    val useGrid = true
     val lazyListState = viewModel.lazyListState
+    val lazyGridState = viewModel.lazyGridState
 
     // observe list scrolling
-    val reachedBottom: Boolean by remember {
-        derivedStateOf {
-            val lastVisibleItem = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()
-            lastVisibleItem?.index != 0 && lastVisibleItem?.index == lazyListState.layoutInfo.totalItemsCount - 5
+    if (useGrid) {
+        val reachedBottom: Boolean by remember {
+            derivedStateOf {
+                val lastVisibleItem = lazyGridState.layoutInfo.visibleItemsInfo.lastOrNull()
+                lastVisibleItem?.index != 0 && lastVisibleItem?.index == lazyGridState.layoutInfo.totalItemsCount - 1
+            }
+        }
+        // load more if scrolled to bottom
+        LaunchedEffect(reachedBottom) {
+            if (reachedBottom) viewModel.onEvent(ItemVListEvent.LoadMore)
+        }
+    } else {
+        val reachedBottom: Boolean by remember {
+            derivedStateOf {
+                val lastVisibleItem = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()
+                lastVisibleItem?.index != 0 && lastVisibleItem?.index == lazyListState.layoutInfo.totalItemsCount - 1
+            }
+        }
+        // load more if scrolled to bottom
+        LaunchedEffect(reachedBottom) {
+            if (reachedBottom) viewModel.onEvent(ItemVListEvent.LoadMore)
         }
     }
-    // load more if scrolled to bottom
-    LaunchedEffect(reachedBottom) {
-        if (reachedBottom) viewModel.onEvent(ItemVListEvent.LoadMore)
-    }
+
 
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -233,20 +253,41 @@ fun ItemVListView(
                         viewModel.onEvent(ItemVListEvent.Refresh)
                     }
                 ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        state = lazyListState
-                    ) {
-                        items(viewModel.state.items.size) {
-                            ItemLabel(
-                                item = viewModel.state.items[it],
-                                itemSelected = itemSelected
-                            )
+                    if (useGrid) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(LocalConfiguration.current.screenWidthDp / 170),
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            state = lazyGridState
+                        ) {
+                            items(viewModel.state.items.size) {
+                                ItemLabel(
+                                    item = viewModel.state.items[it],
+                                    itemSelected = itemSelected
+                                )
+                            }
+                            if (viewModel.state.isLoading) {
+                                item {
+                                    LoadingItem()
+                                }
+                            }
                         }
-                        if (viewModel.state.isLoading) {
-                            item {
-                                LoadingItem()
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            state = lazyListState
+                        ) {
+                            items(viewModel.state.items.size) {
+                                ItemLabelRow(
+                                    item = viewModel.state.items[it],
+                                    itemSelected = itemSelected
+                                )
+                            }
+                            if (viewModel.state.isLoading) {
+                                item {
+                                    LoadingItem()
+                                }
                             }
                         }
                     }
@@ -289,7 +330,7 @@ fun ItemVListView(
 }
 
 @Composable
-fun ItemLabel(
+fun ItemLabelRow(
     item: Item,
     itemSelected: ((Item) -> Unit)? = null
 ) {
@@ -312,8 +353,8 @@ fun ItemLabel(
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier
-                .width(110.dp)
-                .height(165.dp)
+                .width(160.dp)
+                .height(240.dp)
                 .clip(RoundedCornerShape(6.dp))
         )
         Spacer(modifier = Modifier.width(8.dp))
