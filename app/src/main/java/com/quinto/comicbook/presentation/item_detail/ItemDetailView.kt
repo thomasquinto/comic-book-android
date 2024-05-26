@@ -40,6 +40,7 @@ import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.domain.repository.getItemTypesForDetail
 import com.quinto.comicbook.presentation.item_hlist.ItemHListView
 import java.util.Date
+import kotlin.math.max
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +77,7 @@ fun ItemDetailView(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = (LocalConfiguration.current.screenHeightDp / 1.3).dp)
+                            .heightIn(max = (max(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.screenWidthDp) / 1.3).dp)
                     )
 
                     Box(
@@ -117,20 +118,21 @@ fun ItemDetailView(
             }
 
             item {
-                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
+                Column(modifier = Modifier.padding(top = 16.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)) {
                     Text(
                         text = item.name,
                         fontSize = MaterialTheme.typography.headlineSmall.fontSize,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = item.description,
-                        fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-                        //fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.secondary,
-                    )
+                    if (item.description.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = item.description,
+                            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
                 }
             }
 
@@ -157,7 +159,7 @@ fun ItemDetailView(
             title = {
                 Text(
                     text = "",//item.itemType.typeName.replaceFirstChar { it.uppercase(Locale.getDefault()) },
-                    fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )

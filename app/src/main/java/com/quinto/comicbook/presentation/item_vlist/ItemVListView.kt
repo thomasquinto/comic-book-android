@@ -80,6 +80,8 @@ fun ItemVListView(
     backClicked: (() -> Unit)? = null,
     detailItem: Item? = null
 ) {
+    val sizeFactor = if (isTablet()) 1.0f else 0.6875f
+
     val viewModel: ItemVListViewModel =
         hiltViewModel<ItemVListViewModel, ItemVListViewModel.ItemVListViewModelFactory>(key = itemType) { factory ->
             factory.create(itemType, detailItem)
@@ -180,7 +182,7 @@ fun ItemVListView(
                         } else {
                             Text(
                                 text = title,
-                                fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                                fontSize = MaterialTheme.typography.titleLarge.fontSize,
                                 fontWeight = FontWeight.Bold,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -226,7 +228,7 @@ fun ItemVListView(
                     title = {
                         Text(
                             text = title,
-                            fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -255,7 +257,7 @@ fun ItemVListView(
                 ) {
                     if (useGrid) {
                         LazyVerticalGrid(
-                            columns = GridCells.Fixed(LocalConfiguration.current.screenWidthDp / 170),
+                            columns = GridCells.Fixed((LocalConfiguration.current.screenWidthDp / ((160 * sizeFactor)  + 10)).toInt()),
                             modifier = Modifier
                                 .fillMaxWidth(),
                             state = lazyGridState
@@ -263,7 +265,8 @@ fun ItemVListView(
                             items(viewModel.state.items.size) {
                                 ItemLabel(
                                     item = viewModel.state.items[it],
-                                    itemSelected = itemSelected
+                                    itemSelected = itemSelected,
+                                    sizeFactor = sizeFactor
                                 )
                             }
                             if (viewModel.state.isLoading) {
@@ -281,7 +284,8 @@ fun ItemVListView(
                             items(viewModel.state.items.size) {
                                 ItemLabelRow(
                                     item = viewModel.state.items[it],
-                                    itemSelected = itemSelected
+                                    itemSelected = itemSelected,
+                                    sizeFactor = sizeFactor
                                 )
                             }
                             if (viewModel.state.isLoading) {
@@ -332,7 +336,8 @@ fun ItemVListView(
 @Composable
 fun ItemLabelRow(
     item: Item,
-    itemSelected: ((Item) -> Unit)? = null
+    itemSelected: ((Item) -> Unit)? = null,
+    sizeFactor: Float = 1.0f
 ) {
     Row(
         modifier = Modifier
@@ -353,8 +358,8 @@ fun ItemLabelRow(
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier
-                .width(160.dp)
-                .height(240.dp)
+                .width((160 * sizeFactor).dp)
+                .height((240 * sizeFactor).dp)
                 .clip(RoundedCornerShape(6.dp))
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -425,4 +430,12 @@ private fun SortingOption(
             modifier = Modifier.padding(start = 16.dp)
         )
     }
+}
+
+@Composable
+fun isTablet() : Boolean {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp
+    val isTablet = screenWidthDp >= 600
+    return isTablet
 }

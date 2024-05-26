@@ -35,12 +35,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.ItemType
+import com.quinto.comicbook.presentation.item_vlist.isTablet
 
 @Composable
 fun ItemHListView(
@@ -49,6 +49,8 @@ fun ItemHListView(
     itemSelected: ((Item) -> Unit)? = null,
     detailItem: Item? = null
 ) {
+    val sizeFactor = if (isTablet()) 1.0f else 0.6875f
+
     val viewModel: ItemHListViewModel =
         hiltViewModel<ItemHListViewModel, ItemHListViewModel.ItemHListViewModelFactory>(key = itemType) { factory ->
             factory.create(itemType, detailItem)
@@ -92,7 +94,7 @@ fun ItemHListView(
                         }
                     }
                     .padding(
-                        top = 24.dp,
+                        top = 16.dp,
                         bottom = 4.dp
                     )
                     .fillMaxWidth(),
@@ -100,7 +102,7 @@ fun ItemHListView(
             ) {
                 Text(
                     text = viewModel.itemType.replaceFirstChar(Char::uppercase),
-                    fontSize = 22.sp,
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
@@ -108,7 +110,7 @@ fun ItemHListView(
                 if (itemTypeSelected != null) {
                     Text(
                         text = "See all",
-                        fontSize = 16.sp,
+                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -124,7 +126,8 @@ fun ItemHListView(
                 items(viewModel.state.items.size) {
                     ItemLabel(
                         item = viewModel.state.items[it],
-                        itemSelected = itemSelected
+                        itemSelected = itemSelected,
+                        sizeFactor = sizeFactor
                     )
                 }
                 if (viewModel.state.isLoading) {
@@ -140,12 +143,13 @@ fun ItemHListView(
 @Composable
 fun ItemLabel(
     item: Item,
-    itemSelected: ((Item) -> Unit)? = null
+    itemSelected: ((Item) -> Unit)? = null,
+    sizeFactor: Float = 1.0f
 ) {
     Column(
         modifier = Modifier
-            .width(168.dp)
-            .padding(4.dp)
+            .width((160 * sizeFactor).dp)
+            .padding(top = 8.dp, bottom = 4.dp, start = 4.dp, end = 4.dp)
             .clickable(enabled = itemSelected != null) {
                 if (itemSelected != null) {
                     itemSelected(item)
@@ -161,10 +165,9 @@ fun ItemLabel(
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier
-                .width(160.dp)
-                .height(240.dp)
+                .width((160 * sizeFactor).dp)
+                .height((240 * sizeFactor).dp)
                 .clickable(enabled = itemSelected != null) {
-                    println("Item selected: $item")
                     if (itemSelected != null) {
                         itemSelected(item)
                     }
@@ -173,13 +176,13 @@ fun ItemLabel(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Box(
-            modifier = Modifier.width(168.dp)
+            modifier = Modifier.width((160 * sizeFactor).dp)
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 text = item.name,
-                fontSize = 18.sp,
+                fontSize = MaterialTheme.typography.labelLarge.fontSize,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground,
                 overflow = TextOverflow.Ellipsis,
