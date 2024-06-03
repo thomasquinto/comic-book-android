@@ -65,6 +65,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.quinto.comicbook.data.remote.OrderBy
 import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.ItemType
+import com.quinto.comicbook.domain.repository.getItemTypesForSearching
+import com.quinto.comicbook.domain.repository.getItemTypesForSorting
 import com.quinto.comicbook.domain.repository.getOrderByName
 import com.quinto.comicbook.domain.repository.getOrderByValues
 import com.quinto.comicbook.presentation.item_hlist.ItemLabel
@@ -145,7 +147,7 @@ fun ItemVListView(
 
     Scaffold(
         topBar = {
-            if (itemType != ItemType.STORY.typeName && itemType != ItemType.FAVORITE.typeName) {
+            if (getItemTypesForSearching().contains(ItemType.byName(itemType))) {
                 TopAppBar(
                     title = {
                         if (isSearchExpanded) {
@@ -196,14 +198,16 @@ fun ItemVListView(
                         }
                     },
                     actions = {
-                        IconButton(onClick = {
-                            showBottomSheet = true
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.Sort,
-                                contentDescription = "Sort",
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
+                        if (getItemTypesForSorting().contains(ItemType.byName(itemType))) {
+                            IconButton(onClick = {
+                                showBottomSheet = true
+                            }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.Sort,
+                                    contentDescription = "Sort",
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
                         }
 
                         if (isSearchExpanded) {

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -27,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +38,6 @@ import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.domain.repository.getItemTypesForDetail
 import com.quinto.comicbook.presentation.item_hlist.ItemHListView
 import java.util.Date
-import kotlin.math.max
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,7 +74,7 @@ fun ItemDetailView(
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = (max(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.screenWidthDp) / 1.3).dp)
+                            //.heightIn(max = (max(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.screenWidthDp) / 1.3).dp)
                     )
 
                     Box(

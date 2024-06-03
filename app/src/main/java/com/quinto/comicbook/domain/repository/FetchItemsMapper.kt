@@ -33,23 +33,39 @@ fun getItemTypesForHome() = listOf(
     ItemType.STORY
 )
 
+fun getItemTypesForSearching() = listOf(
+    ItemType.COMIC,
+    ItemType.CHARACTER,
+    ItemType.SERIES,
+    ItemType.CREATOR,
+    ItemType.EVENT,
+)
+
+fun getItemTypesForSorting() = listOf(
+    ItemType.COMIC,
+    ItemType.CHARACTER,
+    ItemType.SERIES,
+    ItemType.CREATOR,
+    ItemType.EVENT,
+)
+
 fun getDefaultOrderBy(itemType: String) = when (itemType) {
-    "characters" -> OrderBy.NAME
-    "comics" -> OrderBy.TITLE
-    "creators" -> OrderBy.LAST_NAME
-    "events" -> OrderBy.NAME
-    "series" -> OrderBy.TITLE
-    "stories" -> OrderBy.MODIFIED_DESC
+    ItemType.CHARACTER.typeName -> OrderBy.NAME
+    ItemType.COMIC.typeName -> OrderBy.TITLE
+    ItemType.CREATOR.typeName -> OrderBy.LAST_NAME
+    ItemType.EVENT.typeName -> OrderBy.NAME
+    ItemType.SERIES.typeName -> OrderBy.TITLE
+    ItemType.STORY.typeName -> OrderBy.MODIFIED_DESC
     else -> throw IllegalArgumentException("Unknown item type: $itemType")
 }
 
 fun getOrderByValues(itemType: String) = when (itemType) {
-    "characters" -> listOf(OrderBy.NAME, OrderBy.MODIFIED_DESC)
-    "comics" -> listOf(OrderBy.TITLE, OrderBy.ON_SALE_DATE, OrderBy.ON_SALE_DATE_DESC, OrderBy.MODIFIED_DESC)
-    "creators" -> listOf(OrderBy.LAST_NAME, OrderBy.FIRST_NAME, OrderBy.MODIFIED_DESC)
-    "events" -> listOf(OrderBy.NAME, OrderBy.START_DATE, OrderBy.START_DATE_DESC, OrderBy.MODIFIED_DESC)
-    "series" -> listOf(OrderBy.TITLE, OrderBy.START_YEAR, OrderBy.START_YEAR_DESC, OrderBy.MODIFIED_DESC)
-    "stories" -> listOf(OrderBy.MODIFIED_DESC)
+    ItemType.CHARACTER.typeName -> listOf(OrderBy.NAME, OrderBy.MODIFIED_DESC)
+    ItemType.COMIC.typeName -> listOf(OrderBy.TITLE, OrderBy.ON_SALE_DATE, OrderBy.ON_SALE_DATE_DESC, OrderBy.MODIFIED_DESC)
+    ItemType.CREATOR.typeName -> listOf(OrderBy.LAST_NAME, OrderBy.FIRST_NAME, OrderBy.MODIFIED_DESC)
+    ItemType.EVENT.typeName -> listOf(OrderBy.NAME, OrderBy.START_DATE, OrderBy.START_DATE_DESC, OrderBy.MODIFIED_DESC)
+    ItemType.SERIES.typeName -> listOf(OrderBy.TITLE, OrderBy.START_YEAR, OrderBy.START_YEAR_DESC, OrderBy.MODIFIED_DESC)
+    ItemType.STORY.typeName -> listOf(OrderBy.MODIFIED_DESC)
     else -> throw IllegalArgumentException("Unknown item type: $itemType")
 }
 
