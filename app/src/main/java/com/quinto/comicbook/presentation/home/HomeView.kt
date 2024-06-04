@@ -53,13 +53,15 @@ fun HomeView(
             Box {
                 // Parallax hero image
 
+                val heroHeight = min(450, max(LocalConfiguration.current.screenHeightDp / 2, LocalConfiguration.current.screenWidthDp / 2)).dp
+
                 Image(
                     painter = painterResource(id = R.drawable.hero_image),
                     contentDescription = "Hero Image",
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = max(420 , LocalConfiguration.current.screenHeightDp / 2).dp)
+                        .heightIn(max = heroHeight )
                         .graphicsLayer {
                             alpha = min(1f, 1 - (scrollState.value / 1000f))
                             translationY = -scrollState.value * 0.5f
@@ -70,7 +72,7 @@ fun HomeView(
                 Column(
                     modifier = Modifier
                         .verticalScroll(scrollState)
-                        .padding(top = 420.dp)
+                        .padding(top = heroHeight)
                 ) {
                     getItemTypesForHome().forEach { itemType ->
                         ItemHListView(itemType.typeName, itemTypeSelected, itemSelected)
