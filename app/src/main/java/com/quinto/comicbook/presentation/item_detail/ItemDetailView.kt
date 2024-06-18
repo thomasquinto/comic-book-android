@@ -51,7 +51,7 @@ fun ItemDetailView(
 
     val viewModel: ItemDetailViewModel =
         hiltViewModel<ItemDetailViewModel, ItemDetailViewModel.ItemDetailViewModelFactory>() { factory ->
-            factory.create(item.id)
+            factory.create(item)
         }
 
     Box {

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.repository.ComicBookRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -14,14 +15,14 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = ItemDetailViewModel.ItemDetailViewModelFactory::class)
 class ItemDetailViewModel @AssistedInject constructor(
-    @Assisted private val itemId: Int,
+    @Assisted private val item: Item,
     private val repository: ComicBookRepository
 )  : ViewModel(){
 
     @AssistedFactory
     interface ItemDetailViewModelFactory {
         fun create(
-            itemId: Int
+            item: Item
         ): ItemDetailViewModel
     }
 
@@ -31,7 +32,7 @@ class ItemDetailViewModel @AssistedInject constructor(
         viewModelScope.launch {
             repository.retrieveFavoriteItems().let { favoriteItems ->
                 state = state.copy(
-                    isFavorite = favoriteItems.map { it.id }.contains(itemId)
+                    isFavorite = favoriteItems.map { "$it.id-$it.itemType" }.contains("$item.id-$item.itemType")
                 )
             }
         }
