@@ -15,10 +15,10 @@ import java.security.MessageDigest
 interface ComicBookApi {
 
     companion object {
-        const val PUBLIC_KEY = "***REMOVED***"
-        const val PRIVATE_KEY = "***REMOVED***"
+        const val PUBLIC_KEY = "MARVEL_API_PUBLIC_KEY"
+        const val PRIVATE_KEY = "MARVEL_API_PRIVATE_KEY"
         //const val BASE_URL = "https://gateway.marvel.com:443/v1/public/"
-        const val BASE_URL = "***REMOVED***"
+        const val BASE_URL = "https://marvel.tquinto.com/v1/public/"
         const val IMAGE_MISSING_URL = "https://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
 
         fun generateHash(ts: String): String {
