@@ -1,6 +1,9 @@
 # Comic Book Application based on Marvel API
 This is a comic book application for Android that lets you search for comics based on the Marvel API - https://developer.marvel.com
 
+I also implemented this application in iOS with 100% feature parity:
+https://github.com/thomasquinto/comic-book-ios
+
 ## Screenshots
 <img src="https://github.com/thomasquinto/comic-book-android/assets/217340/dffca6a9-27c3-455e-9389-559c37f99fd6" width="160"/>
 <img src="https://github.com/thomasquinto/comic-book-android/assets/217340/cab1dc8a-34b4-45cb-bc6a-ad830c78fd29" width="160"/>
