@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -5,14 +7,21 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+// Add local.properties values to BuildConfig
+val properties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { properties.load(it) }
+}
+
 android {
     namespace = "com.quinto.comicbook"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.quinto.comicbook"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -20,6 +29,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val geminiApiKey = properties.getProperty("geminiApiKey", "defaultValue")
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
@@ -40,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -70,13 +83,15 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.logging.interceptor)
     implementation(libs.coil)
-    implementation(libs.hilt.android.v244)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.swipe.refresh)
     implementation(libs.androidx.material.icons)
     implementation(libs.androidx.material.icons.extended)
+    implementation(libs.generative.ai)
     kapt(libs.hilt.android.compiler)
     kapt(libs.androidx.room.compiler)
+    kapt(libs.activity)
+    kapt(libs.activity.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,5 +1,7 @@
 package com.quinto.comicbook.presentation.item_detail
 
+import android.graphics.drawable.BitmapDrawable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -32,7 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.quinto.comicbook.domain.model.Item
 import com.quinto.comicbook.domain.model.ItemType
 import com.quinto.comicbook.domain.repository.getItemTypesForDetail
@@ -54,6 +59,12 @@ fun ItemDetailView(
             factory.create(item)
         }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.cancelCoroutine()
+        }
+    }
+
     Box {
 
         LazyColumn(
@@ -65,6 +76,11 @@ fun ItemDetailView(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
+                    ImageLoaderWithBitmap(
+                        imageUrl = item.imageUrl,
+                        viewModel = viewModel
+                    )
+                    /*
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(item.imageUrl)
@@ -76,6 +92,7 @@ fun ItemDetailView(
                             .fillMaxWidth()
                             //.heightIn(max = (max(LocalConfiguration.current.screenHeightDp, LocalConfiguration.current.screenWidthDp) / 1.3).dp)
                     )
+                     */
 
                     Box(
                         modifier = Modifier
@@ -126,6 +143,14 @@ fun ItemDetailView(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = item.description,
+                            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                    if(viewModel.state.contentDescription.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = viewModel.state.contentDescription,
                             fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
                             color = MaterialTheme.colorScheme.secondary,
                         )
@@ -190,6 +215,31 @@ fun ItemDetailView(
     }
 
 
+}
+
+@Composable
+fun ImageLoaderWithBitmap(imageUrl: String, viewModel: ItemDetailViewModel) {
+    val painter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(imageUrl)
+            .size(coil.size.Size.ORIGINAL)
+            .allowHardware(false)
+            .build(),
+        onSuccess = { state ->
+            if (state.result is SuccessResult) {
+                val bitmap = (state.result.drawable as BitmapDrawable).bitmap
+                viewModel.onDetailImageLoaded(bitmap);
+            }
+        }
+    )
+
+    Image(
+        painter = painter,
+        contentDescription = null,
+        contentScale = ContentScale.FillWidth,
+        modifier = Modifier
+            .fillMaxWidth()
+    )
 }
 
 @Preview(showBackground = true)

@@ -101,7 +101,9 @@ open class ItemHListViewModel @AssistedInject constructor(
                         }
                     }
 
-                    is Resource.Error -> Unit
+                    is Resource.Error -> {
+                        state = state.copy(isLoading = false)
+                    }
                     is Resource.Loading -> {
                         state = state.copy(isLoading = result.isLoading)
                     }
