@@ -36,7 +36,7 @@ class ItemDetailViewModel @AssistedInject constructor(
 
     var state by mutableStateOf(ItemDetailViewState())
 
-    private var coroutine: Job? = null;
+    private var coroutine: Job? = null
 
     init {
         viewModelScope.launch {

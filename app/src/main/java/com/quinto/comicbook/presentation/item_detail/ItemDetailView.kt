@@ -34,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.request.SuccessResult
@@ -228,7 +227,7 @@ fun ImageLoaderWithBitmap(imageUrl: String, viewModel: ItemDetailViewModel) {
         onSuccess = { state ->
             if (state.result is SuccessResult) {
                 val bitmap = (state.result.drawable as BitmapDrawable).bitmap
-                viewModel.onDetailImageLoaded(bitmap);
+                viewModel.onDetailImageLoaded(bitmap)
             }
         }
     )
