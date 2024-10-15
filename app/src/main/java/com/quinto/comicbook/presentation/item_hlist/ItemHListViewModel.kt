@@ -48,7 +48,9 @@ open class ItemHListViewModel @AssistedInject constructor(
                 getItems(true)
             }
             is ItemHListEvent.LoadMore -> {
-                getItems(false)
+                if (!state.isLoading && !state.hasNoMore) {
+                    getItems(false)
+                }
             }
         }
     }
@@ -68,9 +70,7 @@ open class ItemHListViewModel @AssistedInject constructor(
         }
 
         if (reset) {
-            state.offset = 0
-        } else {
-            state.offset += state.limit
+            state = state.copy(offset = 0)
         }
 
         viewModelScope.launch {
@@ -91,11 +91,15 @@ open class ItemHListViewModel @AssistedInject constructor(
                         result.data?.let {
                             state = if (state.offset == 0) {
                                 state.copy(
-                                    items = it
+                                    items = it,
+                                    offset = state.offset + state.limit,
+                                    hasNoMore = it.size < state.limit
                                 )
                             } else {
                                 state.copy(
-                                    items = state.items + it
+                                    items = state.items + it,
+                                    offset = state.offset + state.limit,
+                                    hasNoMore = it.size < state.limit
                                 )
                             }
                         }

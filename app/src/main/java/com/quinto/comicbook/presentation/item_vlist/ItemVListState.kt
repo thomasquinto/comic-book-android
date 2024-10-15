@@ -10,4 +10,5 @@ data class ItemVListState(
     var limit: Int = 20,
     var orderBy: OrderBy = OrderBy. MODIFIED_DESC,
     val searchText: String = "",
+    val hasNoMore: Boolean = false,
 )
